@@ -214,6 +214,8 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.7-x86_64-darwin)
       racc (~> 1.4)
+    nokogiri (1.18.7-x86_64-linux-gnu)
+      racc (~> 1.4)
     orm_adapter (0.5.0)
     parallel (1.26.3)
     parallel_tests (5.1.0)
@@ -270,6 +272,10 @@ GEM
     rake (13.2.1)
     rdoc (6.13.0)
       psych (>= 4.0.0)
+    redis (5.4.0)
+      redis-client (>= 0.22.0)
+    redis-client (0.24.0)
+      connection_pool
     reline (0.6.0)
       io-console (~> 0.5)
     responders (3.1.1)
@@ -342,6 +348,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 8.0.2)
   ransack!
+  redis
   rspec-rails
   shoulda-matchers
   tzinfo-data
