@@ -1,3 +1,5 @@
+class_room = ClassRoom.first
+
 Student.create!([
   { name: "Vinícius Brandão Xavier", ra: "900006-1", class_room: class_room },
   { name: "Sofia Duarte Moreira", ra: "900025-1", class_room: class_room },
