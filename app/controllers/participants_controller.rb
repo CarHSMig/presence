@@ -6,10 +6,15 @@ class ParticipantsController < ApplicationController
 
   def confirm_presence
     student = find_student
-    event = Event.find_by(id: params["event_id"])
-    participant = find_participant(student, event)
+    return unless student
 
-    return if validate_event_date(event)
+    event = Event.find_by(id: params["event_id"])
+    return render json: { error: 'Evento não encontrado' }, status: :not_found unless event
+
+    participant = find_participant(student, event)
+    return unless participant
+
+    return if common_validates(event)
 
     update_participant_presence(participant, event)
   end
@@ -54,9 +59,10 @@ class ParticipantsController < ApplicationController
     participant
   end
 
-  def validate_event_date(event)
-    return if validate_event_start_date(event)
-    return if validate_event_end_date(event)
+  def common_validates(event)
+    return true if validate_event_start_date(event)
+    return true if validate_event_end_date(event)
+    false
   end
 
   def validate_event_start_date(event)
@@ -64,6 +70,7 @@ class ParticipantsController < ApplicationController
       render json: { error: 'Evento ainda não começou' }, status: :unprocessable_entity
       return true
     end
+    false
   end
 
   def validate_event_end_date(event)
@@ -71,8 +78,8 @@ class ParticipantsController < ApplicationController
       render json: { error: 'Evento já terminou' }, status: :unprocessable_entity
       return true
     end
+    false
   end
-
 
   def update_participant_presence(participant, event)
     if participant.present == false
