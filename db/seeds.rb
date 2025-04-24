@@ -13,11 +13,11 @@ User.create!(
   admin: true
 )
 
-course = Course.create(name:"Análise e Desenvolvimento de Sistemas", periods: 3)
+course = Course.create(name:"Análise e Desenvolvimento de Sistemas", periods: 6)
 Course.create(name:"Direito", periods: 10)
 Course.create(name:"Enfermagem", periods: 10)
 
-class_room = ClassRoom.create!(name: "Turma A", course: course)
+class_room = ClassRoom.create!(name: "Turma A", course: course, period: 2)
 
 Student.create!([
   { name: "Vinícius Brandão Xavier", ra: "900006-1", class_room: class_room },
