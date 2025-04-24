@@ -21,5 +21,50 @@ module Admin
         render json: { error: 'Curso não encontrado' }, status: :not_found
       end
     end
+
+    def create
+      @course = Course.new(course_params)
+
+      if @course.save
+        render jsonapi: @course, class: { Course: SerializableCourse }, status: :created
+      else
+        render json: @course.errors, status: :unprocessable_entity
+      end
+    end
+
+    def update
+      @course = Course.find_by(id: find_params)
+
+      unless @course
+        return render json: { error: 'Curso não encontrada' }, status: :not_found
+      end
+
+      if @course.update(course_params)
+        render jsonapi: @course, class: { Course: SerializableCourse }, status: :ok
+      else
+        render json: @course.errors, status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      @course = Course.find_by(id: find_params)
+
+      unless @course
+        return render json: { error: 'Curso não encontrado' }, status: :not_found
+      end
+
+      if @course.valid?
+        @course.delete
+        render json: { message: 'Curso excluído com sucesso' }, status: :ok
+      else
+        render json: @course.errors, status: :unprocessable_entity
+      end
+    end
+
+    private
+
+    def course_params
+      params.require(:data).require(:attributes).permit(:name, :periods)
+    end
   end
 end

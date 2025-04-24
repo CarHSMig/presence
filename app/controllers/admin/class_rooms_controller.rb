@@ -23,7 +23,9 @@ module Admin
     end
 
     def create
-      @class_room = ClassRoom.new(class_room_params)
+      @class_room = ClassRoom.new(class_room_params_with_course)
+
+      return if validate_class_room_period
 
       if @class_room.save
         render jsonapi: @class_room, class: { ClassRoom: SerializableClassRoom }, status: :created
@@ -39,7 +41,9 @@ module Admin
         return render json: { error: 'Turma não encontrada' }, status: :not_found
       end
 
-      if @class_room.update(class_room_params)
+      return if validate_class_room_period
+
+      if @class_room.update(class_room_params_with_course)
         render jsonapi: @class_room, class: { ClassRoom: SerializableClassRoom }, status: :ok
       else
         render json: @class_room.errors, status: :unprocessable_entity
@@ -53,14 +57,33 @@ module Admin
         return render json: { error: 'Turma não encontrada' }, status: :not_found
       end
 
-      @class_room.destroy
-      render json: { message: 'Turma excluída com sucesso' }, status: :ok
+      if @class_room.valid?
+        @class_room.destroy
+        render json: { message: 'Turma excluída com sucesso' }, status: :ok
+      else 
+        render json: @class_room.errors, status: :unprocessable_entity
+      end
     end
 
     private
 
     def class_room_params
-      params.require(:data).require(:attributes).permit(:name, :course_id)
+      params.require(:data).require(:attributes).permit(:name, :period)
+    end
+
+    def class_room_params_with_course
+      class_room_params.merge(course_id: params[:course_id])
+    end
+
+    def validate_class_room_period
+      course = @class_room.course
+
+      if course.periods < @class_room.period
+        render json: { error: "O período da turma excede os períodos existentes do curso" }, status: :unprocessable_entity
+        return true
+      end
+
+      false
     end
   end
 end
