@@ -87,6 +87,10 @@ Rails.application.configure do
   ]
 
   config.action_cable.mount_path = '/cable'
+
+  # Substituir a url do host para a url da api do sistema
+  Rails.application.routes.default_url_options[:host] = 'universitypresence-api.onrender.com'
+
   # config.hosts = [
   #   "example.com",     # Allow requests from example.com
   #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`

@@ -22,5 +22,31 @@ module Admin
         render json: { error: 'Estudante não encontrado' }, status: :not_found
       end
     end
+
+    def create
+      ActiveRecord::Base.transaction do
+        user = nil
+        if params[:email].present?
+          user = User.create!(
+            name: params[:name],
+            email: params[:email],
+            password: SecureRandom.hex(10),
+            admin: false
+          )
+
+          user.send_reset_password_instructions
+        end
+        student = Student.create!(
+          name: params[:name],
+          ra: params[:ra],
+          class_room_id: params[:class_room_id],
+          user: user
+        )
+
+        render jsonapi: student, include: [:class_room], class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom }, status: :created
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { error: e.message }, status: :unprocessable_entity
+    end
   end
 end

@@ -18,12 +18,14 @@ gem 'devise-jwt'
 gem 'httparty'
 gem 'dotenv-rails'
 gem 'redis'
+gem 'actionmailer'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'database_cleaner-active_record'
   gem 'debug', platforms: %i[mri mswin mswin64 mingw x64_mingw]
   gem 'factory_bot_rails'
+  gem 'letter_opener'
   gem 'faker'
   gem 'parallel_tests'
   gem 'rspec-rails'

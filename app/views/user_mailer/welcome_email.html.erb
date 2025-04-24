@@ -1,0 +1,5 @@
+<h1>Olá, <%= @user.name %>!</h1>
+
+<p>Bem-vindo ao sistema. Clique no link abaixo para definir sua senha:</p>
+
+<p><%= link_to 'Definir senha', edit_password_url(@user, reset_password_token: @user.send(:set_reset_password_token)) %></p>
