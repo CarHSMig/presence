@@ -2,7 +2,7 @@
 
 class Student < ApplicationRecord
   belongs_to :class_room
-  belongs_to :user, optional: true
+  has_one :user
   has_many :participants
 
   validates :name, :ra, presence: true

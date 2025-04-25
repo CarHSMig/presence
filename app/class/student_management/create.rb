@@ -14,9 +14,9 @@ module StudentManagement
 
     def perform
       ActiveRecord::Base.transaction do
-        user = create_user
-        student = create_student(user)
-        if student.valid?
+        student = create_student
+        user = create_user(student)
+        if user.valid?
           UserMailer.with(user: user).welcome_email.deliver_now
         else
           raise ActiveRecord::Rollback
@@ -27,21 +27,21 @@ module StudentManagement
 
     private
 
-    def create_user
+    def create_user(student)
       User.create!(
         name: @params[:name],
         email: @params[:email],
         password: SecureRandom.hex(10),
-        admin: false
+        admin: false,
+        student: student
       )
     end
 
-    def create_student(user = nil)
+    def create_student
       Student.create!(
         name: @params[:name],
         ra: @params[:ra],
-        class_room_id: @params[:class_room_id],
-        user: user
+        class_room_id: @params[:class_room_id]
       )
     end
   end

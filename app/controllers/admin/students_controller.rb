@@ -24,18 +24,40 @@ module Admin
     end
 
     def create
-      student = StudentManagement::Create.new(create_params).call
-      render jsonapi: student, include: [:class_room],
-             class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom },
-             status: :created
-    rescue ActiveRecord::RecordInvalid => e
-      render json: { error: e.message }, status: :unprocessable_entity
+      students = []
+      errors = []
+
+      create_params.each do |student_param|
+        begin
+          full_params = student_param.merge(class_room_id: params[:class_room_id])
+          student = StudentManagement::Create.new(full_params).call
+          students << student
+        rescue ActiveRecord::RecordInvalid => e
+          errors << {
+            attributes: student_param,
+            error: e.message
+          }
+        end
+      end
+
+      if errors.empty?
+        render jsonapi: students, include: [:class_room],
+               class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom },
+               status: :created
+      else
+        render json: {
+          created: students.map { |s| { id: s.id, type: 'student' } },
+          errors: errors
+        }, status: :multi_status
+      end
     end
 
     private
 
     def create_params
-      params.permit(:name, :ra, :class_room_id, :email)
+      params.require(:data).map do |item|
+        item.require(:attributes).permit(:name, :ra, :email)
+      end
     end
   end
 end

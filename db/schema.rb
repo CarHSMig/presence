@@ -70,10 +70,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_24_015621) do
     t.uuid "class_room_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "user_id"
     t.index ["class_room_id"], name: "index_students_on_class_room_id"
     t.index ["ra"], name: "index_students_on_ra", unique: true
-    t.index ["user_id"], name: "index_students_on_user_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -86,8 +84,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_24_015621) do
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.boolean "admin", default: true
+    t.uuid "student_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["student_id"], name: "index_users_on_student_id"
   end
 
   add_foreign_key "class_rooms", "courses", on_update: :cascade, on_delete: :cascade
@@ -97,5 +97,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_24_015621) do
   add_foreign_key "participants", "events", on_update: :cascade, on_delete: :cascade
   add_foreign_key "participants", "students", on_update: :cascade
   add_foreign_key "students", "class_rooms", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "students", "users"
+  add_foreign_key "users", "students"
 end
