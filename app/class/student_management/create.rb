@@ -17,7 +17,7 @@ module StudentManagement
         user = create_user
         student = create_student(user)
         if student.valid?
-          user.send_reset_password_instructions
+          UserMailer.with(user: user).welcome_email.deliver_now
         else
           raise ActiveRecord::Rollback
         end
