@@ -71,7 +71,7 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_caching = false
-  config.mailer_sender = 'no-reply@gmail.com'
+  config.mailer_sender = 'sysunipresence@gmail.com'
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address:              'smtp-relay.brevo.com',

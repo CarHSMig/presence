@@ -24,29 +24,18 @@ module Admin
     end
 
     def create
-      ActiveRecord::Base.transaction do
-        user = nil
-        if params[:email].present?
-          user = User.create!(
-            name: params[:name],
-            email: params[:email],
-            password: SecureRandom.hex(10),
-            admin: false
-          )
-
-          user.send_reset_password_instructions
-        end
-        student = Student.create!(
-          name: params[:name],
-          ra: params[:ra],
-          class_room_id: params[:class_room_id],
-          user: user
-        )
-
-        render jsonapi: student, include: [:class_room], class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom }, status: :created
-      end
+      student = StudentManagement::Create.new(create_params).call
+      render jsonapi: student, include: [:class_room],
+             class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom },
+             status: :created
     rescue ActiveRecord::RecordInvalid => e
       render json: { error: e.message }, status: :unprocessable_entity
+    end
+
+    private
+
+    def create_params
+      params.permit(:name, :ra, :class_room_id, :email)
     end
   end
 end
