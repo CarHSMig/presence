@@ -86,8 +86,6 @@ Rails.application.configure do
 
   config.action_cable.mount_path = '/cable'
 
-  # envio de email
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
   # config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
@@ -105,7 +103,7 @@ Rails.application.configure do
   }
 
   # Substituir a url do host para a url da api do sistema
-  Rails.application.routes.default_url_options[:host] = 'universitypresence-api.onrender.com'
+  Rails.application.routes.default_url_options[:host] = ENV.fetch('DEFAULT_URL_HOST', 'localhost')
 
   # config.hosts = [
   #   "example.com",     # Allow requests from example.com
