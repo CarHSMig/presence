@@ -10,7 +10,6 @@ module StudentManagement
     def call
       case File.extname(@file_path).downcase
       when '.xlsx'
-        byebug
         ImportStudent::ImportXlsx.new(@file_path, @class_room_id).call
       when '.csv'
         ImportStudent::ImportCsv.new(@file_path, @class_room_id).call
