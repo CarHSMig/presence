@@ -38,6 +38,43 @@
 					"response": []
 				},
 				{
+					"name": "create course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"course\",\r\n        \"attributes\": {\r\n            \"name\": \"teste\",\r\n            \"periods\": 2\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/admin/courses",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "show course",
 					"request": {
 						"auth": {
@@ -52,6 +89,94 @@
 						},
 						"method": "GET",
 						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/courses/:course_id",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"courses",
+								":course_id"
+							],
+							"variable": [
+								{
+									"key": "course_id",
+									"value": "85952ab0-97d8-4f04-bfd3-bda8dae7672d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"course\",\r\n        \"attributes\": {\r\n            \"name\": \"to textando\",\r\n            \"periods\": 2\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/admin/courses/:course_id",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"courses",
+								":course_id"
+							],
+							"variable": [
+								{
+									"key": "course_id",
+									"value": "62144d2e-846e-4a8f-982d-1e859741339d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"course\",\r\n        \"attributes\": {\r\n            \"name\": \"teste\",\r\n            \"periods\": 2\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{URL}}/admin/courses/:course_id",
 							"host": [
@@ -293,7 +418,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/admin/events?q[s]=event_start+asc",
+							"raw": "{{URL}}/admin/events?q[s]=event_start asc&in_progress=true",
 							"host": [
 								"{{URL}}"
 							],
@@ -304,7 +429,11 @@
 							"query": [
 								{
 									"key": "q[s]",
-									"value": "event_start+asc"
+									"value": "event_start asc"
+								},
+								{
+									"key": "in_progress",
+									"value": "true"
 								}
 							]
 						}
@@ -339,7 +468,7 @@
 							"variable": [
 								{
 									"key": "event_id",
-									"value": "425b717c-12ba-4175-8e8e-0b2b37469bc0"
+									"value": "4e37205f-c938-48f6-bc57-c1e6891bb797"
 								}
 							]
 						}
@@ -363,7 +492,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"event\",\r\n        \"attributes\": {\r\n            \"name\": \"Teste 321\",\r\n            \"description\": \"Apresnetação da dev Paraná no auditório Master\",\r\n            \"event_start\": \"2025-06-28T15:00:00-03:00\",\r\n            \"event_end\": \"2025-06-28T18:00:00-03:00\",\r\n            \"course_id\": \"2b9705fa-afdd-41fe-9db8-c7c7c01182ed\",\r\n            \"location\": \"unipar universidade paranaense de francisco beltrão\",\r\n            \"class_room_ids\": [\"c6c6d2ce-de89-455d-941d-5b035f416cb7\"]\r\n        }\r\n    }\r\n}",
+							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"product\",\r\n        \"attributes\": {\r\n            \"name\": \"Apresnetação de Trabalho\",\r\n            \"description\": \"Trabalho de Desenvolvimento Mobile\",\r\n            \"event_start\": \"2025-04-25T19:43:10\",\r\n            \"event_end\": \"2025-04-25T19:50:20\",\r\n            \"course_id\": \"29ac9c8d-136b-48db-99b3-a553671dfc04\",\r\n            \"location\": \"Unipar francisco beltrão\",\r\n            \"class_room_ids\": [\r\n                \"9c98c09e-e3fd-48d1-bac3-d3d8b8cdf571\"\r\n            ]\r\n        }\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -510,6 +639,51 @@
 					"response": []
 				},
 				{
+					"name": "create ClassRoom",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"course\",\r\n        \"attributes\": {\r\n            \"name\": \"turma B\",\r\n            \"period\": 1\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/admin/courses/:course_id/class_rooms",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"courses",
+								":course_id",
+								"class_rooms"
+							],
+							"variable": [
+								{
+									"key": "course_id",
+									"value": "29ac9c8d-136b-48db-99b3-a553671dfc04"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "show ClassRoom",
 					"request": {
 						"auth": {
@@ -523,6 +697,100 @@
 							]
 						},
 						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/courses/:course_id/class_rooms/:class_room_id?include=course",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"courses",
+								":course_id",
+								"class_rooms",
+								":class_room_id"
+							],
+							"query": [
+								{
+									"key": "include",
+									"value": "course"
+								}
+							],
+							"variable": [
+								{
+									"key": "course_id",
+									"value": ""
+								},
+								{
+									"key": "class_room_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update ClassRoom",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/courses/:course_id/class_rooms/:class_room_id?include=course",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"courses",
+								":course_id",
+								"class_rooms",
+								":class_room_id"
+							],
+							"query": [
+								{
+									"key": "include",
+									"value": "course"
+								}
+							],
+							"variable": [
+								{
+									"key": "course_id",
+									"value": ""
+								},
+								{
+									"key": "class_room_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete ClassRoom",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
 						"header": [],
 						"url": {
 							"raw": "{{URL}}/admin/courses/:course_id/class_rooms/:class_room_id?include=course",
@@ -665,7 +933,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"data\": {\r\n        \"type\": \"presence\",\r\n        \"attributes\": {\r\n            \"ra\": \"900007-1\",\r\n            \"latitude\": -26.086257947376403,\r\n            \"longitude\": -53.04284153339412\r\n        }\r\n    }\r\n}",
+									"raw": "{\r\n    \"data\": {\r\n        \"type\": \"participant\",\r\n        \"attributes\": {\r\n            \"ra\": \"900007-1\",\r\n            \"latitude\": -26.08671845,\r\n            \"longitude\": -53.0423999307\r\n        }\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -685,7 +953,7 @@
 									"variable": [
 										{
 											"key": "event_id",
-											"value": "0fbf11ba-63bd-43d7-afd7-af1097c420c8"
+											"value": "f0f3a62c-9fc7-4cd4-a739-b9d77bdce790"
 										}
 									]
 								}
@@ -746,7 +1014,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/admin/events/:event_id/participants",
+							"raw": "{{URL}}/admin/events/:event_id/participants?per_page=70&q[s]=student_name+asc",
 							"host": [
 								"{{URL}}"
 							],
@@ -756,10 +1024,20 @@
 								":event_id",
 								"participants"
 							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "70"
+								},
+								{
+									"key": "q[s]",
+									"value": "student_name+asc"
+								}
+							],
 							"variable": [
 								{
 									"key": "event_id",
-									"value": "0fbf11ba-63bd-43d7-afd7-af1097c420c8"
+									"value": "4e37205f-c938-48f6-bc57-c1e6891bb797"
 								}
 							]
 						}
@@ -859,7 +1137,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://nominatim.openstreetmap.org/reverse?lat=-26.086257947376403&lon=-53.04284153339412&format=json",
+							"raw": "https://nominatim.openstreetmap.org/reverse?lat=-26.0734976&lon=-53.0710528&format=json",
 							"protocol": "https",
 							"host": [
 								"nominatim",
@@ -872,11 +1150,11 @@
 							"query": [
 								{
 									"key": "lat",
-									"value": "-26.086257947376403"
+									"value": "-26.0734976"
 								},
 								{
 									"key": "lon",
-									"value": "-53.04284153339412"
+									"value": "-53.0710528"
 								},
 								{
 									"key": "format",

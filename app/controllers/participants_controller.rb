@@ -66,7 +66,7 @@ class ParticipantsController < ApplicationController
   end
 
   def validate_event_start_date(event)
-    if event.event_start > Time.now
+    if event.event_start > Time.current
       render json: { error: 'Evento ainda não começou' }, status: :unprocessable_entity
       return true
     end
@@ -74,7 +74,7 @@ class ParticipantsController < ApplicationController
   end
 
   def validate_event_end_date(event)
-    if event.event_end < Time.now
+    if event.event_end < Time.current
       render json: { error: 'Evento já terminou' }, status: :unprocessable_entity
       return true
     end
