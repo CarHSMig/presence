@@ -2,6 +2,7 @@
 
 class Student < ApplicationRecord
   belongs_to :class_room
+  has_one :user
   has_many :participants
 
   validates :name, :ra, presence: true

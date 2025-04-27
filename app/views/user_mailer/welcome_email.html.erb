@@ -1,0 +1,23 @@
+<h1 style="font-family: Arial, sans-serif; color: #333;">Olá, <%= @user.name %>,</h1>
+
+<p style="font-family: Arial, sans-serif; color: #555; font-size: 16px;">
+    Seja bem-vindo ao nosso sistema! É um prazer tê-lo conosco.
+</p>
+
+<p style="font-family: Arial, sans-serif; color: #555; font-size: 16px;">
+    Para ativar sua conta, por favor crie uma senha segura clicando no botão abaixo, você será redirecionado para uma página onde poderá definir sua senha de acesso:
+</p>
+
+<p>
+    <a href="<%= edit_password_url(@user, reset_password_token: @user.send(:set_reset_password_token)) %>" style="display: inline-block; padding: 12px 24px; font-family: Arial, sans-serif; font-size: 16px; color: #fff; background-color: #dc3545; text-decoration: none; border-radius: 6px;">
+        Criar senha de acesso
+    </a>
+</p>
+
+<p style="font-family: Arial, sans-serif; color: #555; font-size: 14px;">
+    Se você não solicitou este e-mail, nenhuma ação é necessária. Para sua segurança, recomendamos ignorar esta mensagem.
+</p>
+
+<p style="font-family: Arial, sans-serif; color: #999; font-size: 12px;">
+    Esta é uma mensagem automática. Por favor, não responda este e-mail.
+</p>
