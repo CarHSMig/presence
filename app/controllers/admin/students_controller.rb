@@ -73,6 +73,23 @@ module Admin
       end
     end
 
+    def template
+      template_service = ImportStudent::ImportTemplate.new(params)
+      file_content = template_service.template
+      format = params[:format].to_s.downcase
+
+      filename = "template_importacao_alunos.#{format == 'xlsx' ? 'xlsx' : 'csv'}"
+      content_type = if format == 'xlsx'
+                       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                     else
+                       'text/csv'
+                     end
+
+      send_data file_content, filename: filename, type: content_type
+    rescue StandardError => e
+      render json: { error: e.message }, status: :unprocessable_entity
+    end
+
     private
 
     def create_params

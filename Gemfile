@@ -20,6 +20,8 @@ gem 'dotenv-rails'
 gem 'redis'
 gem 'actionmailer'
 gem 'roo'
+gem 'caxlsx'
+gem 'caxlsx_rails'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
