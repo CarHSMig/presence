@@ -7,7 +7,7 @@ class Event < ApplicationRecord
 
   validates :name, :description, :event_start, :event_end, :location, :latitude, :longitude, presence: true
 
-  scope :finished, -> { where('event_end > ?', Time.current) }
+  scope :finished, -> { where('event_end < ?', Time.current) }
   scope :upcoming, -> { where('event_start > ?', Time.current) }
   scope :in_progress, -> { where('event_start < ? AND event_end > ?', Time.current, Time.current) }
 
