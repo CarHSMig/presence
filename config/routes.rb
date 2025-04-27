@@ -15,7 +15,11 @@ Rails.application.routes.draw do
     end
     resources :courses do
       resources :class_rooms do
-        resources :students
+        resources :students do
+          collection do
+            post :import
+          end
+        end
       end
     end
   end

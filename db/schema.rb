@@ -10,93 +10,93 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 20_250_424_015_621) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_24_015621) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension 'pg_catalog.plpgsql'
-  enable_extension 'pgcrypto'
+  enable_extension "pg_catalog.plpgsql"
+  enable_extension "pgcrypto"
 
-  create_table 'class_rooms', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
-    t.string 'name', null: false
-    t.uuid 'course_id', null: false
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.integer 'period', null: false
-    t.index ['course_id'], name: 'index_class_rooms_on_course_id'
+  create_table "class_rooms", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.uuid "course_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "period", null: false
+    t.index ["course_id"], name: "index_class_rooms_on_course_id"
   end
 
-  create_table 'class_rooms_events', id: false, force: :cascade do |t|
-    t.uuid 'event_id', null: false
-    t.uuid 'class_room_id', null: false
-    t.index %w[class_room_id event_id], name: 'index_class_rooms_events_on_class_room_id_and_event_id'
-    t.index ['class_room_id'], name: 'index_class_rooms_events_on_class_room_id'
-    t.index %w[event_id class_room_id], name: 'index_class_rooms_events_on_event_id_and_class_room_id', unique: true
-    t.index ['event_id'], name: 'index_class_rooms_events_on_event_id'
+  create_table "class_rooms_events", id: false, force: :cascade do |t|
+    t.uuid "event_id", null: false
+    t.uuid "class_room_id", null: false
+    t.index ["class_room_id", "event_id"], name: "index_class_rooms_events_on_class_room_id_and_event_id"
+    t.index ["class_room_id"], name: "index_class_rooms_events_on_class_room_id"
+    t.index ["event_id", "class_room_id"], name: "index_class_rooms_events_on_event_id_and_class_room_id", unique: true
+    t.index ["event_id"], name: "index_class_rooms_events_on_event_id"
   end
 
-  create_table 'courses', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
-    t.string 'name'
-    t.integer 'periods'
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
+  create_table "courses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.integer "periods"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table 'events', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
-    t.string 'name'
-    t.string 'description'
-    t.datetime 'event_start'
-    t.datetime 'event_end'
-    t.uuid 'course_id', null: false
-    t.jsonb 'location', default: {}, null: false
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.decimal 'latitude', precision: 15, scale: 10, null: false
-    t.decimal 'longitude', precision: 15, scale: 10, null: false
-    t.index ['course_id'], name: 'index_events_on_course_id'
+  create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.datetime "event_start"
+    t.datetime "event_end"
+    t.uuid "course_id", null: false
+    t.jsonb "location", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "latitude", precision: 15, scale: 10, null: false
+    t.decimal "longitude", precision: 15, scale: 10, null: false
+    t.index ["course_id"], name: "index_events_on_course_id"
   end
 
-  create_table 'participants', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
-    t.uuid 'event_id', null: false
-    t.uuid 'student_id', null: false
-    t.boolean 'present'
-    t.jsonb 'location', default: {}
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.index ['event_id'], name: 'index_participants_on_event_id'
-    t.index ['student_id'], name: 'index_participants_on_student_id'
+  create_table "participants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "event_id", null: false
+    t.uuid "student_id", null: false
+    t.boolean "present"
+    t.jsonb "location", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_participants_on_event_id"
+    t.index ["student_id"], name: "index_participants_on_student_id"
   end
 
-  create_table 'students', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
-    t.string 'name', null: false
-    t.string 'ra', null: false
-    t.uuid 'class_room_id', null: false
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.index ['class_room_id'], name: 'index_students_on_class_room_id'
-    t.index ['ra'], name: 'index_students_on_ra', unique: true
+  create_table "students", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "ra", null: false
+    t.uuid "class_room_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["class_room_id"], name: "index_students_on_class_room_id"
+    t.index ["ra"], name: "index_students_on_ra", unique: true
   end
 
-  create_table 'users', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
-    t.string 'name'
-    t.string 'email'
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.string 'encrypted_password', default: '', null: false
-    t.string 'reset_password_token'
-    t.datetime 'reset_password_sent_at'
-    t.datetime 'remember_created_at'
-    t.boolean 'admin', default: true
-    t.uuid 'student_id'
-    t.index ['email'], name: 'index_users_on_email', unique: true
-    t.index ['reset_password_token'], name: 'index_users_on_reset_password_token', unique: true
-    t.index ['student_id'], name: 'index_users_on_student_id'
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.boolean "admin", default: true
+    t.uuid "student_id"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["student_id"], name: "index_users_on_student_id"
   end
 
-  add_foreign_key 'class_rooms', 'courses', on_update: :cascade, on_delete: :cascade
-  add_foreign_key 'class_rooms_events', 'class_rooms'
-  add_foreign_key 'class_rooms_events', 'events'
-  add_foreign_key 'events', 'courses', on_update: :cascade
-  add_foreign_key 'participants', 'events', on_update: :cascade, on_delete: :cascade
-  add_foreign_key 'participants', 'students', on_update: :cascade
-  add_foreign_key 'students', 'class_rooms', on_update: :cascade, on_delete: :cascade
-  add_foreign_key 'users', 'students'
+  add_foreign_key "class_rooms", "courses", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "class_rooms_events", "class_rooms"
+  add_foreign_key "class_rooms_events", "events"
+  add_foreign_key "events", "courses", on_update: :cascade
+  add_foreign_key "participants", "events", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "participants", "students", on_update: :cascade
+  add_foreign_key "students", "class_rooms", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "users", "students"
 end
