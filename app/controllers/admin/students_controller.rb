@@ -10,14 +10,16 @@ module Admin
       students = students.ransack(params[:q])
       @students = students.result.page(params[:page]).per(params[:per_page] || 10)
 
-      render jsonapi: @students, include: include_options, class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom }, status: :ok
+      render jsonapi: @students, include: include_options,
+             class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom }, status: :ok
     end
 
     def show
       @student = Student.find_by(id: find_params)
 
       if @student
-        render jsonapi: @student, include: include_options, class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom }, status: :ok
+        render jsonapi: @student, include: include_options,
+               class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom }, status: :ok
       else
         render json: { error: 'Estudante não encontrado' }, status: :not_found
       end
@@ -28,16 +30,14 @@ module Admin
       errors = []
 
       create_params.each do |student_param|
-        begin
-          full_params = student_param.merge(class_room_id: params[:class_room_id])
-          student = StudentManagement::Create.new(full_params).call
-          students << student
-        rescue ActiveRecord::RecordInvalid => e
-          errors << {
-            attributes: student_param,
-            error: e.message
-          }
-        end
+        full_params = student_param.merge(class_room_id: params[:class_room_id])
+        student = StudentManagement::Create.new(full_params).call
+        students << student
+      rescue ActiveRecord::RecordInvalid => e
+        errors << {
+          attributes: student_param,
+          error: e.message
+        }
       end
 
       if errors.empty?
@@ -50,6 +50,44 @@ module Admin
           errors: errors
         }, status: :multi_status
       end
+    end
+
+    def import
+      render json: { error: 'Arquivo não enviado' }, status: :bad_request and return if params[:file].blank?
+
+      begin
+        result = StudentManagement::ImportDispatcher.new(params[:file].path, params[:class_room_id]).call
+
+        if result[:errors].empty?
+          render jsonapi: result[:students], include: [:class_room],
+                 class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom },
+                 status: :created
+        else
+          render json: {
+            created: result[:students].map { |s| { id: s.id, type: 'student' } },
+            errors: result[:errors]
+          }, status: :multi_status
+        end
+      rescue StandardError => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      end
+    end
+
+    def template
+      template_service = ImportStudent::ImportTemplate.new(params)
+      file_content = template_service.template
+      format = params[:format].to_s.downcase
+
+      filename = "template_importacao_alunos.#{format == 'xlsx' ? 'xlsx' : 'csv'}"
+      content_type = if format == 'xlsx'
+                       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                     else
+                       'text/csv'
+                     end
+
+      send_data file_content, filename: filename, type: content_type
+    rescue StandardError => e
+      render json: { error: e.message }, status: :unprocessable_entity
     end
 
     private
