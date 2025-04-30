@@ -22,7 +22,7 @@ module Admin
     end
 
     def show
-      @student = Student.find_by(id: find_params)
+      @student = Student.find_by(id: find_params, class_room_id: params[:class_room_id])
 
       if @student
         render jsonapi: @student, include: include_options,
