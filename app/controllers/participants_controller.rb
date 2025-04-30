@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ParticipantsController < ApplicationController
-  include ActiveModel::Model
   attr_reader :participant
 
   def confirm_presence

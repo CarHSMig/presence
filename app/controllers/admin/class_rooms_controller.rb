@@ -3,23 +3,23 @@
 module Admin
   class ClassRoomsController < ApplicationController
     before_action :authenticate_user_with_jwt
+    before_action :set_class_room, only: [:show, :update, :destroy]
+
+    before_action -> { authorize(ClassRoom) }, only: [:index, :create]
+    before_action -> { authorize(@class_room) }, only: [:show, :update, :destroy]
 
     def index
       class_rooms = ClassRoom.where(course_id: params[:course_id]) if params[:course_id].present?
       class_rooms = class_rooms.ransack(params[:q])
       @class_rooms = class_rooms.result.page(params[:page]).per(params[:per_page] || 10)
 
-      render jsonapi: @class_rooms, include: include_options, class: { ClassRoom: SerializableClassRoom, Course: SerializableCourse }, status: :ok
+      render jsonapi: @class_rooms, include: include_options,
+             class: { ClassRoom: SerializableClassRoom, Course: SerializableCourse }, status: :ok
     end
 
     def show
-      @class_room = ClassRoom.find_by(id: find_params)
-
-      if @class_room
-        render jsonapi: @class_room, include: include_options, class: { ClassRoom: SerializableClassRoom, Course: SerializableCourse }, status: :ok
-      else
-        render json: { error: 'Turma não encontrada' }, status: :not_found
-      end
+      render jsonapi: @class_room, include: include_options,
+             class: { ClassRoom: SerializableClassRoom, Course: SerializableCourse }, status: :ok
     end
 
     def create
@@ -35,11 +35,7 @@ module Admin
     end
 
     def update
-      @class_room = ClassRoom.find_by(id: find_params)
-
-      unless @class_room
-        return render json: { error: 'Turma não encontrada' }, status: :not_found
-      end
+      return render json: { error: 'Turma não encontrada' }, status: :not_found unless @class_room
 
       return if validate_class_room_period
 
@@ -51,21 +47,21 @@ module Admin
     end
 
     def destroy
-      @class_room = ClassRoom.find_by(id: find_params)
-
-      unless @class_room
-        return render json: { error: 'Turma não encontrada' }, status: :not_found
-      end
+      return render json: { error: 'Turma não encontrada' }, status: :not_found unless @class_room
 
       if @class_room.valid?
         @class_room.destroy
         render json: { message: 'Turma excluída com sucesso' }, status: :ok
-      else 
+      else
         render json: @class_room.errors, status: :unprocessable_entity
       end
     end
 
     private
+
+    def set_class_room
+      @class_room = ClassRoom.find_by(id: find_params)
+    end
 
     def class_room_params
       params.require(:data).require(:attributes).permit(:name, :period)
@@ -76,10 +72,11 @@ module Admin
     end
 
     def validate_class_room_period
-      course = @class_room.course
+      course = @class_room&.course || Course.find_by(id: params[:course_id])
 
-      if course.periods < @class_room.period
-        render json: { error: "O período da turma excede os períodos existentes do curso" }, status: :unprocessable_entity
+      if course && course.periods < @class_room.period
+        render json: { error: 'O período da turma excede os períodos existentes do curso' },
+               status: :unprocessable_entity
         return true
       end
 

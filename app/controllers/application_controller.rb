@@ -1,13 +1,15 @@
 class ApplicationController < ActionController::API
+  include ActiveModel::Model
+  include Pundit
 
   def find_params
     params.require(:id)
   end
 
   def authenticate_user_with_jwt
-    unless current_user
-      render json: { error: 'Você precisa estar autenticado para acessar esta rota.' }, status: :unauthorized
-    end
+    return if current_user
+
+    render json: { error: 'Você precisa estar autenticado para acessar esta rota.' }, status: :unauthorized
   end
 
   def include_options

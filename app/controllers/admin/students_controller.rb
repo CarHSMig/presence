@@ -4,6 +4,13 @@ module Admin
   class StudentsController < ApplicationController
     before_action :authenticate_user_with_jwt
 
+    before_action :set_student, only: %i[show update destroy]
+
+    before_action -> { authorize(Student) }, only: %i[index create]
+    before_action -> { authorize(Student, :import?) }, only: %i[import]
+    before_action -> { authorize(Student, :template?) }, only: %i[template]
+    before_action -> { authorize(@student) }, only: %i[show update destroy]
+
     def index
       students = Student.all
       students = students.where(class_room_id: params[:class_room_id]) if params[:class_room_id].present?
@@ -91,6 +98,10 @@ module Admin
     end
 
     private
+
+    def set_student
+      @student = Student.find_by(id: find_params)
+    end
 
     def create_params
       params.require(:data).map do |item|
