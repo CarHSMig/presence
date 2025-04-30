@@ -1,0 +1,88 @@
+User.create!(
+  name: "Admin",
+  email: "admin@university.presence",
+  password: "troque-esta-senha",
+  password_confirmation: "troque-esta-senha",
+  admin: true
+)
+User.create!(
+  name: "Alan",
+  email: "alan@university.presence",
+  password: "troque-esta-senha",
+  password_confirmation: "troque-esta-senha",
+  admin: true
+)
+
+course = Course.create(name:"Análise e Desenvolvimento de Sistemas", periods: 6)
+Course.create(name:"Direito", periods: 10)
+Course.create(name:"Enfermagem", periods: 10)
+
+class_room = ClassRoom.create!(name: "Turma A", course: course, period: 2)
+
+Student.create!([
+  { name: "Vinícius Brandão Xavier", ra: "900006-1", class_room: class_room },
+  { name: "Sofia Duarte Moreira", ra: "900025-1", class_room: class_room },
+  { name: "Camila Nogueira Barbosa", ra: "900007-1", class_room: class_room },
+  { name: "Gabriela Gomes Siqueira", ra: "900018-1", class_room: class_room },
+  { name: "Tatiana Xavier Holanda", ra: "900022-1", class_room: class_room },
+  { name: "Enzo Brandão Almeida", ra: "900003-1", class_room: class_room },
+  { name: "Vitor Cardoso Brandão", ra: "900016-1", class_room: class_room },
+  { name: "Daniela Holanda Nogueira", ra: "900012-1", class_room: class_room },
+  { name: "Otávio Rezende Pacheco", ra: "900045-1", class_room: class_room },
+  { name: "Igor Lacerda Teixeira", ra: "900033-1", class_room: class_room },
+  { name: "Igor Duarte Barbosa", ra: "900009-1", class_room: class_room },
+  { name: "Eduarda Siqueira Brandão", ra: "900043-1", class_room: class_room },
+  { name: "Renata Vasconcelos Brandão", ra: "900048-1", class_room: class_room },
+  { name: "Isabela Queiroz Rezende", ra: "900031-1", class_room: class_room },
+  { name: "Igor Queiroz Almeida", ra: "900049-1", class_room: class_room },
+  { name: "Beatriz Zanetti Teixeira", ra: "900017-1", class_room: class_room },
+  { name: "Felipe Esteves Zanetti", ra: "900046-1", class_room: class_room },
+  { name: "Diego Vasconcelos Teixeira", ra: "900050-1", class_room: class_room },
+  { name: "Caio Vasconcelos Nogueira", ra: "900011-1", class_room: class_room },
+  { name: "Renata Rezende Holanda", ra: "900044-1", class_room: class_room },
+  { name: "Mariana Esteves Teixeira", ra: "900037-1", class_room: class_room },
+  { name: "Natália Barbosa Queiroz", ra: "900040-1", class_room: class_room },
+  { name: "Manuela Esteves Siqueira", ra: "900004-1", class_room: class_room },
+  { name: "Thiago Queiroz Zanetti", ra: "900023-1", class_room: class_room },
+  { name: "Bruno Holanda Almeida", ra: "900038-1", class_room: class_room },
+  { name: "Larissa Xavier Gomes", ra: "900056-1", class_room: class_room },
+  { name: "Lucas Teixeira Brandão", ra: "900027-1", class_room: class_room },
+  { name: "Júlia Freitas Nogueira", ra: "900013-1", class_room: class_room },
+  { name: "Paula Gomes Holanda", ra: "900029-1", class_room: class_room },
+  { name: "Isabela Vasconcelos Lacerda", ra: "900030-1", class_room: class_room },
+  { name: "Olívia Gomes Esteves", ra: "900034-1", class_room: class_room },
+  { name: "Sofia Gomes Cardoso", ra: "900036-1", class_room: class_room },
+  { name: "Olívia Barbosa Holanda", ra: "900051-1", class_room: class_room },
+  { name: "Henrique Rezende Freitas", ra: "900035-1", class_room: class_room },
+  { name: "Bruno Nogueira Holanda", ra: "900039-1", class_room: class_room },
+  { name: "Enzo Teixeira Duarte", ra: "900010-1", class_room: class_room },
+  { name: "Gustavo Holanda Xavier", ra: "900026-1", class_room: class_room },
+  { name: "Bruno Rezende Zanetti", ra: "900055-1", class_room: class_room },
+  { name: "Isabela Pacheco Xavier", ra: "900024-1", class_room: class_room },
+  { name: "Paula Barbosa Brandão", ra: "900008-1", class_room: class_room },
+  { name: "Ana Xavier Esteves", ra: "900052-1", class_room: class_room },
+  { name: "Gabriela Cardoso Moreira", ra: "900001-1", class_room: class_room },
+  { name: "Caio Siqueira Esteves", ra: "900020-1", class_room: class_room },
+  { name: "Helena Gomes Barbosa", ra: "900053-1", class_room: class_room },
+  { name: "Diego Holanda Xavier", ra: "900019-1", class_room: class_room },
+  { name: "Gustavo Teixeira Siqueira", ra: "900063-1", class_room: class_room },
+  { name: "Tatiana Duarte Barbosa", ra: "900005-1", class_room: class_room },
+  { name: "Otávio Vasconcelos Moreira", ra: "900002-1", class_room: class_room },
+  { name: "Olívia Freitas Zanetti", ra: "900042-1", class_room: class_room },
+  { name: "Eduarda Lacerda Queiroz", ra: "900041-1", class_room: class_room },
+  { name: "Sofia Nogueira Zanetti", ra: "900014-1", class_room: class_room },
+  { name: "Renata Duarte Xavier", ra: "900021-1", class_room: class_room },
+  { name: "Júlia Barbosa Siqueira", ra: "900047-1", class_room: class_room },
+  { name: "Samuel Zanetti Lacerda", ra: "900054-1", class_room: class_room },
+  { name: "Rafael Xavier Zanetti", ra: "900028-1", class_room: class_room },
+  { name: "Paula Pacheco Brandão", ra: "900032-1", class_room: class_room },
+  { name: "Pedro Holanda Almeida", ra: "900015-1", class_room: class_room },
+  { name: "Sofia Vasconcelos Holanda", ra: "900061-1", class_room: class_room },
+  { name: "Pedro Zanetti Teixeira", ra: "900058-1", class_room: class_room },
+  { name: "Isabela Brandão Cardoso", ra: "900057-1", class_room: class_room },
+  { name: "Nicolas Esteves Queiroz", ra: "900060-1", class_room: class_room },
+  { name: "Enzo Barbosa Duarte", ra: "900062-1", class_room: class_room },
+  { name: "Henrique Queiroz Lacerda", ra: "900059-1", class_room: class_room },
+])
+
+puts "Seed concluido com sucesso!"

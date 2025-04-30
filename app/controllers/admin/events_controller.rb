@@ -4,7 +4,7 @@ module Admin
   class EventsController < ApplicationController
     include ActiveModel::Model
     before_action :authenticate_user_with_jwt
-    before_action :set_course, only: %i[show update destroy]
+    before_action :set_event, only: %i[show update destroy]
 
     before_action -> { authorize(Event) }, only: %i[index create]
     before_action -> { authorize(@event) }, only: %i[show update destroy]
@@ -12,7 +12,7 @@ module Admin
     attr_reader :event, :class_room_ids
 
     def index
-      events = Event.all
+      events = policy_scope(Event)
 
       if params[:finished]
         events = events.finished if ActiveModel::Type::Boolean.new.cast(params[:finished])

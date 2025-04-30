@@ -25,7 +25,7 @@ class ClassRoomPolicy < ApplicationPolicy
     user.student.nil? && user.admin?
   end
 
-  def student
+  def student?
     user.student.present?
   end
 end

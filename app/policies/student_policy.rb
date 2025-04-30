@@ -4,7 +4,7 @@ class StudentPolicy < ApplicationPolicy
   end
 
   def show?
-    admin_or_owner?
+    admin?
   end
 
   def create?
@@ -33,7 +33,7 @@ class StudentPolicy < ApplicationPolicy
     user.student.nil? && user.admin?
   end
 
-  def student
+  def student?
     user.student?
   end
 end

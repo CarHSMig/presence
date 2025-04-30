@@ -4,12 +4,12 @@ module Admin
   class StudentsController < ApplicationController
     before_action :authenticate_user_with_jwt
 
-    before_action :set_student, only: %i[show update destroy]
+    before_action :set_student, only: %i[show]
 
     before_action -> { authorize(Student) }, only: %i[index create]
     before_action -> { authorize(Student, :import?) }, only: %i[import]
     before_action -> { authorize(Student, :template?) }, only: %i[template]
-    before_action -> { authorize(@student) }, only: %i[show update destroy]
+    before_action -> { authorize(@student) }, only: %i[show]
 
     def index
       students = Student.all

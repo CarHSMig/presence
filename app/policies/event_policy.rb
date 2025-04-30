@@ -1,10 +1,20 @@
 class EventPolicy < ApplicationPolicy
+  class Scope < Scope
+    def resolve
+      if user.student.present?
+        scope.joins(:participants).where(participants: { student_id: user.student.id }).distinct
+      else
+        scope.all
+      end
+    end
+  end
+
   def index?
     admin? || student?
   end
 
   def show?
-    index?
+    admin?
   end
 
   def create?
@@ -25,7 +35,7 @@ class EventPolicy < ApplicationPolicy
     user.student.nil? && user.admin?
   end
 
-  def student
+  def student?
     user.student.present?
   end
 end
