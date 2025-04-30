@@ -6,10 +6,10 @@ module Admin
 
     before_action :set_student, only: %i[show update]
 
-    before_action -> { authorize(Student) }, only: %i[index create]
+    before_action -> { authorize(Student) }, only: %i[index create destroy]
     before_action -> { authorize(Student, :import?) }, only: %i[import]
     before_action -> { authorize(Student, :template?) }, only: %i[template]
-    before_action -> { authorize(@student) }, only: %i[show update]
+    before_action -> { authorize(@student) }, only: %i[show update destroy]
 
     def index
       students = Student.all
@@ -68,6 +68,18 @@ module Admin
                class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom }, status: :ok
       else
         render json: @student.errors, status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      return render json: { error: 'Estudante não encontrada' }, status: :not_found unless @student
+
+      if @student.valid?
+        @student.delete
+        render jsonapi: @student, include: include_options,
+               class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom }, status: :ok
+      else
+        render json: @student.errors, status: :not_found
       end
     end
 
