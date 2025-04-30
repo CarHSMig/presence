@@ -37,7 +37,7 @@ module Admin
     def update
       return render json: { error: 'Curso não encontrada' }, status: :not_found unless @course
 
-      @course&.assign_attributes(event_params)
+      @course&.assign_attributes(course_params)
 
       if @course.valid?
         @course.save!

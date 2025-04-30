@@ -15,4 +15,10 @@ class SerializableParticipant < JSONAPI::Serializable::Resource
   attribute :student_ra do
     @object.student.ra
   end
+
+  attribute :email do
+    student = @object.student
+    user = User.find_by(student_id: student.id)
+    user.email if user
+  end
 end

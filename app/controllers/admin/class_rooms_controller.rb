@@ -3,10 +3,10 @@
 module Admin
   class ClassRoomsController < ApplicationController
     before_action :authenticate_user_with_jwt
-    before_action :set_class_room, only: [:show, :update, :destroy]
+    before_action :set_class_room, only: %i[show update destroy]
 
-    before_action -> { authorize(ClassRoom) }, only: [:index, :create]
-    before_action -> { authorize(@class_room) }, only: [:show, :update, :destroy]
+    before_action -> { authorize(ClassRoom) }, only: %i[index create]
+    before_action -> { authorize(@class_room) }, only: %i[show update destroy]
 
     def index
       class_rooms = ClassRoom.where(course_id: params[:course_id]) if params[:course_id].present?
@@ -39,7 +39,7 @@ module Admin
 
       return if validate_class_room_period
 
-      @class_room&.assign_attributes(event_params)
+      @class_room&.assign_attributes(class_room_params)
 
       if @course.valid?
         @class_room.save!

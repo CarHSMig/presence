@@ -4,9 +4,9 @@ module Admin
   class StudentsController < ApplicationController
     before_action :authenticate_user_with_jwt
 
-    before_action :set_student, only: %i[show update]
+    before_action :set_student, only: %i[show update destroy]
 
-    before_action -> { authorize(Student) }, only: %i[index create destroy]
+    before_action -> { authorize(Student) }, only: %i[index create]
     before_action -> { authorize(Student, :import?) }, only: %i[import]
     before_action -> { authorize(Student, :template?) }, only: %i[template]
     before_action -> { authorize(@student) }, only: %i[show update destroy]
@@ -60,7 +60,7 @@ module Admin
     def update
       return render json: { error: 'Estudante não encontrada' }, status: :not_found unless @student
 
-      @student&.assign_attributes(event_params)
+      @student&.assign_attributes(update_params)
 
       if @student.valid?
         @student.save!
@@ -131,6 +131,10 @@ module Admin
       params.require(:data).map do |item|
         item.require(:attributes).permit(:name, :ra, :email)
       end
+    end
+
+    def update_params
+      params.require(:data).require(:attributes).permit(:name, :ra)
     end
   end
 end
