@@ -57,7 +57,12 @@ module Admin
       return render json: { error: 'Evento não encontrado' }, status: :not_found unless @event
 
       @event&.assign_attributes(event_params)
-      get_location(event_params['location'])
+
+      location = event_params['location']
+
+      if location.present?
+        get_location(location)
+      end
 
       return if common_validates
 
