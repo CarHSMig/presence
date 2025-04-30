@@ -3,6 +3,10 @@
 module Admin
   class CoursesController < ApplicationController
     before_action :authenticate_user_with_jwt
+    before_action :set_course, only: %i[show update destroy]
+
+    before_action -> { authorize(Course) }, only: %i[index create]
+    before_action -> { authorize(@course) }, only: %i[show update destroy]
 
     def index
       courses = Course.all
@@ -13,8 +17,6 @@ module Admin
     end
 
     def show
-      @course = Course.find_by(id: find_params)
-
       if @course
         render jsonapi: @course, class: { Course: SerializableCourse }, status: :ok
       else
@@ -33,11 +35,7 @@ module Admin
     end
 
     def update
-      @course = Course.find_by(id: find_params)
-
-      unless @course
-        return render json: { error: 'Curso não encontrada' }, status: :not_found
-      end
+      return render json: { error: 'Curso não encontrada' }, status: :not_found unless @course
 
       if @course.update(course_params)
         render jsonapi: @course, class: { Course: SerializableCourse }, status: :ok
@@ -47,11 +45,7 @@ module Admin
     end
 
     def destroy
-      @course = Course.find_by(id: find_params)
-
-      unless @course
-        return render json: { error: 'Curso não encontrado' }, status: :not_found
-      end
+      return render json: { error: 'Curso não encontrado' }, status: :not_found unless @course
 
       if @course.valid?
         @course.delete
@@ -62,6 +56,10 @@ module Admin
     end
 
     private
+
+    def set_course
+      @course = Course.find_by(id: find_params)
+    end
 
     def course_params
       params.require(:data).require(:attributes).permit(:name, :periods)

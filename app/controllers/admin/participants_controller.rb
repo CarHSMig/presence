@@ -2,12 +2,11 @@
 
 module Admin
   class ParticipantsController < ApplicationController
-    include ActiveModel::Model
-
     before_action :authenticate_user_with_jwt, only: %i[index show destroy]
     attr_reader :participant
 
     def index
+      authorize(Participant)
       participants = Participant.includes(:student).where(event_id: event_id)
       participants = participants.ransack(params[:q])
       @participants = participants.result.page(params[:page]).per(params[:per_page] || 10)
@@ -21,7 +20,7 @@ module Admin
 
     def show
       @participant = Participant.find_by(id: find_params, event_id: event_id)
-
+      authorize(@participant)
       if @participant
         render jsonapi: @participants, include: include_options,
                class: { Participant: SerializableParticipant, Event: SerializableEvent, Student: SerializableStudent }, status: :ok
@@ -32,7 +31,7 @@ module Admin
 
     def destroy
       @participant = Participant.find_by(id: find_params, event_id: event_id)
-
+      authorize(@participant)
       return render json: { error: 'Evento não encontrado' }, status: :not_found unless @event
 
       if @participant.valid?

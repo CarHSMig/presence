@@ -4,10 +4,15 @@ module Admin
   class EventsController < ApplicationController
     include ActiveModel::Model
     before_action :authenticate_user_with_jwt
+    before_action :set_event, only: %i[show update destroy]
+
+    before_action -> { authorize(Event) }, only: %i[index create]
+    before_action -> { authorize(@event) }, only: %i[show update destroy]
+
     attr_reader :event, :class_room_ids
 
     def index
-      events = Event.all
+      events = policy_scope(Event)
 
       if params[:finished]
         events = events.finished if ActiveModel::Type::Boolean.new.cast(params[:finished])
@@ -25,8 +30,6 @@ module Admin
     end
 
     def show
-      @event = Event.find_by(id: find_params)
-
       if @event
         render jsonapi: @event, include: include_options,
                class: { Event: SerializableEvent, Course: SerializableCourse }, status: :ok, meta: { presence_url: generate_presence_url }
@@ -51,12 +54,15 @@ module Admin
     end
 
     def update
-      @event = Event.find_by(id: find_params)
-
       return render json: { error: 'Evento não encontrado' }, status: :not_found unless @event
 
       @event&.assign_attributes(event_params)
-      get_location(event_params['location'])
+
+      location = event_params['location']
+
+      if location.present?
+        get_location(location)
+      end
 
       return if common_validates
 
@@ -69,8 +75,6 @@ module Admin
     end
 
     def destroy
-      @event = Event.find_by(id: find_params)
-
       return render json: { error: 'Evento não encontrado' }, status: :not_found unless @event
 
       if @event.valid?
@@ -83,6 +87,10 @@ module Admin
     end
 
     private
+
+    def set_event
+      @event = Event.find_by(id: find_params)
+    end
 
     def event_params
       params.require(:data).require(:attributes).permit(
