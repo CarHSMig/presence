@@ -39,7 +39,10 @@ module Admin
 
       return if validate_class_room_period
 
-      if @class_room.update(class_room_params_with_course)
+      @class_room&.assign_attributes(event_params)
+
+      if @course.valid?
+        @class_room.save!
         render jsonapi: @class_room, class: { ClassRoom: SerializableClassRoom }, status: :ok
       else
         render json: @class_room.errors, status: :unprocessable_entity
