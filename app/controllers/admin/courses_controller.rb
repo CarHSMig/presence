@@ -37,7 +37,10 @@ module Admin
     def update
       return render json: { error: 'Curso não encontrada' }, status: :not_found unless @course
 
-      if @course.update(course_params)
+      @course&.assign_attributes(course_params)
+
+      if @course.valid?
+        @course.save!
         render jsonapi: @course, class: { Course: SerializableCourse }, status: :ok
       else
         render json: @course.errors, status: :unprocessable_entity

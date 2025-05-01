@@ -4,12 +4,12 @@ module Admin
   class StudentsController < ApplicationController
     before_action :authenticate_user_with_jwt
 
-    before_action :set_student, only: %i[show]
+    before_action :set_student, only: %i[show update destroy]
 
     before_action -> { authorize(Student) }, only: %i[index create]
     before_action -> { authorize(Student, :import?) }, only: %i[import]
     before_action -> { authorize(Student, :template?) }, only: %i[template]
-    before_action -> { authorize(@student) }, only: %i[show]
+    before_action -> { authorize(@student) }, only: %i[show update destroy]
 
     def index
       students = Student.all
@@ -22,8 +22,6 @@ module Admin
     end
 
     def show
-      @student = Student.find_by(id: find_params, class_room_id: params[:class_room_id])
-
       if @student
         render jsonapi: @student, include: include_options,
                class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom }, status: :ok
@@ -56,6 +54,32 @@ module Admin
           created: students.map { |s| { id: s.id, type: 'student' } },
           errors: errors
         }, status: :multi_status
+      end
+    end
+
+    def update
+      return render json: { error: 'Estudante não encontrada' }, status: :not_found unless @student
+
+      @student&.assign_attributes(update_params)
+
+      if @student.valid?
+        @student.save!
+        render jsonapi: @student, include: include_options,
+               class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom }, status: :ok
+      else
+        render json: @student.errors, status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      return render json: { error: 'Estudante não encontrada' }, status: :not_found unless @student
+
+      if @student.valid?
+        @student.delete
+        render jsonapi: @student, include: include_options,
+               class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom }, status: :ok
+      else
+        render json: @student.errors, status: :not_found
       end
     end
 
@@ -100,13 +124,17 @@ module Admin
     private
 
     def set_student
-      @student = Student.find_by(id: find_params)
+      @student = Student.find_by(id: find_params, class_room_id: params[:class_room_id])
     end
 
     def create_params
       params.require(:data).map do |item|
         item.require(:attributes).permit(:name, :ra, :email)
       end
+    end
+
+    def update_params
+      params.require(:data).require(:attributes).permit(:name, :ra)
     end
   end
 end

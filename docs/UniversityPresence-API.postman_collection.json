@@ -102,7 +102,7 @@
 							"variable": [
 								{
 									"key": "course_id",
-									"value": "85952ab0-97d8-4f04-bfd3-bda8dae7672d"
+									"value": "c9c54c21-88db-4c21-a713-93af497b9b20"
 								}
 							]
 						}
@@ -418,7 +418,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/admin/events?q[s]=event_start asc&in_progress=true",
+							"raw": "{{URL}}/admin/events?q[s]=event_start asc",
 							"host": [
 								"{{URL}}"
 							],
@@ -430,10 +430,6 @@
 								{
 									"key": "q[s]",
 									"value": "event_start asc"
-								},
-								{
-									"key": "in_progress",
-									"value": "true"
 								}
 							]
 						}
@@ -492,7 +488,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"product\",\r\n        \"attributes\": {\r\n            \"name\": \"Apresnetação de Trabalho\",\r\n            \"description\": \"Trabalho de Desenvolvimento Mobile\",\r\n            \"event_start\": \"2025-07-25T19:43:10\",\r\n            \"event_end\": \"2025-07-25T19:50:20\",\r\n            \"course_id\": \"3e06bb78-fd1c-4650-9fcc-d87b64423d2d\",\r\n            \"location\": \"Unipar francisco beltrão\",\r\n            \"class_room_ids\": [\r\n                \"9841f595-245a-42c4-90ab-c9b5313f06b6\"\r\n            ]\r\n        }\r\n    }\r\n}",
+							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"product\",\r\n        \"attributes\": {\r\n            \"name\": \"Evento que não deve aparecer\",\r\n            \"description\": \"Trabalho de Desenvolvimento Mobile\",\r\n            \"event_start\": \"2025-07-25T19:43:10\",\r\n            \"event_end\": \"2025-07-25T19:50:20\",\r\n            \"course_id\": \"314ace91-af2c-417a-a670-acbc71d87f48\",\r\n            \"location\": \"Unipar francisco beltrão\",\r\n            \"class_room_ids\": [\r\n                \"14643da8-fe5d-4563-8f72-2c3de37a6535\"\r\n            ]\r\n        }\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -535,7 +531,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"product\",\r\n        \"attributes\": {\r\n            \"name\": \"Apresnetação de Trabalho\",\r\n            \"description\": \"Trabalho de Desenvolvimento Mobile\",\r\n            \"event_start\": \"2025-03-31T15:00:00-03:00\",\r\n            \"event_end\": \"2025-03-31T18:00:00-03:00\",\r\n            \"course_id\": \"4b4512d4-b2c5-4672-9083-895cc42fef20\",\r\n            \"longitude\": \"\",\r\n            \"latitude\": \"\",\r\n            \"class_room_ids\": [\r\n                \"3b4d1f17-8f40-4163-9dcb-5509887a5007\"\r\n            ]\r\n        }\r\n    }\r\n}",
+							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"product\",\r\n        \"attributes\": {\r\n            \"name\": \"Certamente um evento atualizado\",\r\n            \"description\": \"Trabalho de Desenvolvimento Mobile\"\r\n        }\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -555,7 +551,7 @@
 							"variable": [
 								{
 									"key": "event_id",
-									"value": "e8c23c4d-843a-4896-a2d7-058dc4d3c8fb"
+									"value": "7204dc69-cc56-49a0-aeed-9627e0e557f3"
 								}
 							]
 						}
@@ -631,7 +627,7 @@
 							"variable": [
 								{
 									"key": "course_id",
-									"value": "3e06bb78-fd1c-4650-9fcc-d87b64423d2d"
+									"value": "314ace91-af2c-417a-a670-acbc71d87f48"
 								}
 							]
 						}
@@ -676,7 +672,7 @@
 							"variable": [
 								{
 									"key": "course_id",
-									"value": "29ac9c8d-136b-48db-99b3-a553671dfc04"
+									"value": "42372d74-5024-4eae-9dfb-229fbafb014d"
 								}
 							]
 						}
@@ -860,11 +856,11 @@
 							"variable": [
 								{
 									"key": "course_id",
-									"value": "2be5dde8-6bac-4d3b-abc6-6fc3c5a56dc6"
+									"value": "42372d74-5024-4eae-9dfb-229fbafb014d"
 								},
 								{
 									"key": "class_room_id",
-									"value": "25423793-5812-499e-93a8-734b91ad6614"
+									"value": "f8f70808-fa53-4c09-806d-241b5980a036"
 								}
 							]
 						}
@@ -872,7 +868,7 @@
 					"response": []
 				},
 				{
-					"name": "create tudents",
+					"name": "create students",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -911,11 +907,11 @@
 							"variable": [
 								{
 									"key": "course_id",
-									"value": "2be5dde8-6bac-4d3b-abc6-6fc3c5a56dc6"
+									"value": "de179d01-ccf3-4cd0-b01d-ec0fb9133bb3"
 								},
 								{
 									"key": "class_room_id",
-									"value": "25423793-5812-499e-93a8-734b91ad6614"
+									"value": "7b92d89d-f278-4558-b7bc-9d338dd7c6c4"
 								}
 							]
 						}
@@ -954,15 +950,118 @@
 							"variable": [
 								{
 									"key": "course_id",
-									"value": ""
+									"value": "42372d74-5024-4eae-9dfb-229fbafb014d"
 								},
 								{
 									"key": "class_room_id",
-									"value": ""
+									"value": "f8f70808-fa53-4c09-806d-241b5980a036"
 								},
 								{
 									"key": "students_id",
-									"value": ""
+									"value": "51cf0e26-e149-4bdc-beca-1b0f477da6b2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update student",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"students\",\r\n        \"attributes\": {\r\n            \"name\": \"atualizar\",\r\n            \"ra\": \"123456791\"\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/admin/courses/:course_id/class_rooms/:class_room_id/students/:students_id",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"courses",
+								":course_id",
+								"class_rooms",
+								":class_room_id",
+								"students",
+								":students_id"
+							],
+							"variable": [
+								{
+									"key": "course_id",
+									"value": "42372d74-5024-4eae-9dfb-229fbafb014d"
+								},
+								{
+									"key": "class_room_id",
+									"value": "f8f70808-fa53-4c09-806d-241b5980a036"
+								},
+								{
+									"key": "students_id",
+									"value": "51cf0e26-e149-4bdc-beca-1b0f477da6b2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete student",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/courses/:course_id/class_rooms/:class_room_id/students/:students_id",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"courses",
+								":course_id",
+								"class_rooms",
+								":class_room_id",
+								"students",
+								":students_id"
+							],
+							"variable": [
+								{
+									"key": "course_id",
+									"value": "42372d74-5024-4eae-9dfb-229fbafb014d"
+								},
+								{
+									"key": "class_room_id",
+									"value": "f8f70808-fa53-4c09-806d-241b5980a036"
+								},
+								{
+									"key": "students_id",
+									"value": "51cf0e26-e149-4bdc-beca-1b0f477da6b2"
 								}
 							]
 						}
@@ -1121,7 +1220,7 @@
 					"response": []
 				},
 				{
-					"name": "create tudents",
+					"name": "delete student",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1133,19 +1232,10 @@
 								}
 							]
 						},
-						"method": "POST",
+						"method": "DELETE",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"data\": [\r\n    {\r\n      \"type\": \"students\",\r\n      \"attributes\": {\r\n        \"name\": \"Alan Przyvara\",\r\n        \"ra\": \"123456791\",\r\n        \"email\": \"aluno123@gmail.com\"\r\n      }\r\n    },\r\n    {\r\n      \"type\": \"students\",\r\n      \"attributes\": {\r\n        \"name\": \"Outro Aluno\",\r\n        \"ra\": \"987654321\",\r\n        \"email\": \"outro1@email.com\"\r\n      }\r\n    }\r\n  ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{URL}}/admin/courses/:course_id/class_rooms/:class_room_id/students",
+							"raw": "{{URL}}/admin/courses/:course_id/class_rooms/:class_room_id/students/:students_id",
 							"host": [
 								"{{URL}}"
 							],
@@ -1155,16 +1245,21 @@
 								":course_id",
 								"class_rooms",
 								":class_room_id",
-								"students"
+								"students",
+								":students_id"
 							],
 							"variable": [
 								{
 									"key": "course_id",
-									"value": "2be5dde8-6bac-4d3b-abc6-6fc3c5a56dc6"
+									"value": "42372d74-5024-4eae-9dfb-229fbafb014d"
 								},
 								{
 									"key": "class_room_id",
-									"value": "25423793-5812-499e-93a8-734b91ad6614"
+									"value": "f8f70808-fa53-4c09-806d-241b5980a036"
+								},
+								{
+									"key": "students_id",
+									"value": "51cf0e26-e149-4bdc-beca-1b0f477da6b2"
 								}
 							]
 						}
@@ -1290,7 +1385,7 @@
 							"variable": [
 								{
 									"key": "event_id",
-									"value": "4e37205f-c938-48f6-bc57-c1e6891bb797"
+									"value": "e3f6acf7-eb22-4d55-bfcc-ab36908e4628"
 								}
 							]
 						}

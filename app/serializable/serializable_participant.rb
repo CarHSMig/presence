@@ -15,4 +15,9 @@ class SerializableParticipant < JSONAPI::Serializable::Resource
   attribute :student_ra do
     @object.student.ra
   end
+
+  attribute :email do
+    user = @object.student.user
+    user&.email
+  end
 end
