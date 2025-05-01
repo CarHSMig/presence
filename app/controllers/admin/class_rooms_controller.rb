@@ -41,7 +41,7 @@ module Admin
 
       @class_room&.assign_attributes(class_room_params)
 
-      if @course.valid?
+      if @class_room.valid?
         @class_room.save!
         render jsonapi: @class_room, class: { ClassRoom: SerializableClassRoom }, status: :ok
       else
