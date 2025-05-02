@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
   include ActiveModel::Model
-  include Pundit
+  include Pundit::Authorization
 
   def find_params
     params.require(:id)

@@ -9,6 +9,10 @@ Rails.application.routes.draw do
                                                     as: :confirm_presence_participants
   get '/participants/:event_id', to: 'participants#show_event', as: :show_event_participants
 
+  namespace :students do
+    resources :events
+  end
+
   namespace :admin do
     resources :courses
     resources :events do
