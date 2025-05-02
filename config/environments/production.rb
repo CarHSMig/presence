@@ -1,6 +1,8 @@
 require 'active_support/core_ext/integer/time'
 
 Rails.application.configure do
+  config.hosts << 'www.api.universitypresence.com'
+  config.hosts << 'www.universitypresence.com'
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -42,7 +44,7 @@ Rails.application.configure do
   # config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
+  config.force_ssl = false
 
   # Log to STDOUT by default
   config.logger = ActiveSupport::Logger.new(STDOUT)
@@ -93,12 +95,12 @@ Rails.application.configure do
   config.mailer_sender = 'sysunipresence@gmail.com'
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address:              'smtp-relay.brevo.com',
-    port:                 587,
-    domain:               'gmail.com',
-    user_name:            Rails.application.credentials.dig(:smtp, :user_name),
-    password:             Rails.application.credentials.dig(:smtp, :password),
-    authentication:       'plain',
+    address: 'smtp-relay.brevo.com',
+    port: 587,
+    domain: 'gmail.com',
+    user_name: Rails.application.credentials.dig(:smtp, :user_name),
+    password: Rails.application.credentials.dig(:smtp, :password),
+    authentication: 'plain',
     enable_starttls_auto: true
   }
 
