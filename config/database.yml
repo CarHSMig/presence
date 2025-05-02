@@ -16,4 +16,5 @@ test:
 
 production:
   <<: *default
+  database: univerity_presence_api_production
   url: <%= ENV["DATABASE_URL"] %>
