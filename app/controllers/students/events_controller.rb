@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Student
+module Students
   class EventsController < ApplicationController
     include ActiveModel::Model
     before_action :authenticate_user_with_jwt
