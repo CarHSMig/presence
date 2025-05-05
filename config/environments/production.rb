@@ -80,9 +80,10 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.action_cable.url = 'wss://universitypresence-api.onrender.com/cable'
+  config.action_cable.url = 'wss://www.api.universitypresence.com/cable'
 
   config.action_cable.allowed_request_origins = [
+    'https://www.api.universitypresence.com',
     'https://university-presence-front.vercel.app' # opcional, só para testes locais
   ]
 
