@@ -233,8 +233,6 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.8-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.8-x86_64-linux-gnu)
-      racc (~> 1.4)
     orm_adapter (0.5.0)
     parallel (1.26.3)
     parallel_tests (5.1.0)
