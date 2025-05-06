@@ -13,12 +13,14 @@ module Admin
       courses = courses.ransack(params[:q])
       @courses = courses.result.page(params[:page]).per(params[:per_page] || 10)
 
-      render jsonapi: @courses, class: { Course: SerializableCourse }, status: :ok
+      render jsonapi: @courses, include: include_options, class: { Course: SerializableCourse, ClassRoom: SerializableClassRoom },
+             status: :ok
     end
 
     def show
       if @course
-        render jsonapi: @course, class: { Course: SerializableCourse }, status: :ok
+        render jsonapi: @course, include: include_options, class: { Course: SerializableCourse, ClassRoom: SerializableClassRoom },
+               status: :ok
       else
         render json: { error: 'Curso não encontrado' }, status: :not_found
       end
@@ -28,7 +30,8 @@ module Admin
       @course = Course.new(course_params)
 
       if @course.save
-        render jsonapi: @course, class: { Course: SerializableCourse }, status: :created
+        render jsonapi: @course, include: include_options, class: { Course: SerializableCourse, ClassRoom: SerializableClassRoom },
+               status: :created
       else
         render json: @course.errors, status: :unprocessable_entity
       end
@@ -41,7 +44,8 @@ module Admin
 
       if @course.valid?
         @course.save!
-        render jsonapi: @course, class: { Course: SerializableCourse }, status: :ok
+        render jsonapi: @course, include: include_options, class: { Course: SerializableCourse, ClassRoom: SerializableClassRoom },
+               status: :ok
       else
         render json: @course.errors, status: :unprocessable_entity
       end
@@ -52,7 +56,8 @@ module Admin
 
       if @course.valid?
         @course.delete
-        render json: { message: 'Curso excluído com sucesso' }, status: :ok
+        render jsonapi: @course, include: include_options, class: { Course: SerializableCourse, ClassRoom: SerializableClassRoom },
+               status: :ok
       else
         render json: @course.errors, status: :unprocessable_entity
       end
