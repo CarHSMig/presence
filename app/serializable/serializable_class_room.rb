@@ -3,7 +3,7 @@
 class SerializableClassRoom < JSONAPI::Serializable::Resource
   type :class_rooms
 
-  attributes :name
+  attributes :name, :period
 
   belongs_to :course
   has_many :students
