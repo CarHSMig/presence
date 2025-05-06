@@ -14,12 +14,12 @@ module Admin
       @class_rooms = class_rooms.result.page(params[:page]).per(params[:per_page] || 10)
 
       render jsonapi: @class_rooms, include: include_options,
-             class: { ClassRoom: SerializableClassRoom, Course: SerializableCourse }, status: :ok
+             class: { ClassRoom: SerializableClassRoom, Course: SerializableCourse, Student: SerializableStudent }, status: :ok
     end
 
     def show
       render jsonapi: @class_room, include: include_options,
-             class: { ClassRoom: SerializableClassRoom, Course: SerializableCourse }, status: :ok
+             class: { ClassRoom: SerializableClassRoom, Course: SerializableCourse, Student: SerializableStudent }, status: :ok
     end
 
     def create
@@ -28,7 +28,8 @@ module Admin
       return if validate_class_room_period
 
       if @class_room.save
-        render jsonapi: @class_room, class: { ClassRoom: SerializableClassRoom }, status: :created
+        render jsonapi: @class_room, include: include_options,
+               class: { ClassRoom: SerializableClassRoom, Student: SerializableStudent }, status: :created
       else
         render json: @class_room.errors, status: :unprocessable_entity
       end
@@ -43,7 +44,8 @@ module Admin
 
       if @class_room.valid?
         @class_room.save!
-        render jsonapi: @class_room, class: { ClassRoom: SerializableClassRoom }, status: :ok
+        render jsonapi: @class_room, include: include_options, class: { ClassRoom: SerializableClassRoom, Student: SerializableStudent },
+               status: :ok
       else
         render json: @class_room.errors, status: :unprocessable_entity
       end
@@ -54,7 +56,8 @@ module Admin
 
       if @class_room.valid?
         @class_room.destroy
-        render json: { message: 'Turma excluída com sucesso' }, status: :ok
+        render jsonapi: @class_room, include: include_options, class: { ClassRoom: SerializableClassRoom, Student: SerializableStudent },
+               status: :ok
       else
         render json: @class_room.errors, status: :unprocessable_entity
       end
