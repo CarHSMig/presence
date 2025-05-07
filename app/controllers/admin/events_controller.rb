@@ -6,7 +6,7 @@ module Admin
     before_action :authenticate_user_with_jwt
     before_action :set_event, only: %i[show update destroy]
 
-    before_action -> { authorize(Event) }, only: %i[index create]
+    before_action -> { authorize(Event) }, only: %i[index create classrooms_by_courses]
     before_action -> { authorize(@event) }, only: %i[show update destroy]
 
     attr_reader :event, :class_room_ids, :course_ids
@@ -27,6 +27,18 @@ module Admin
 
       render jsonapi: @events, include: include_options,
              class: { Event: SerializableEvent, Course: SerializableCourse, ClassRoom: SerializableClassRoom }, status: :ok
+    end
+
+    def classrooms_by_courses
+      course_ids = params[:course_ids]
+      
+      return render json: { error: 'IDs dos cursos não fornecidos' }, status: :unprocessable_entity unless course_ids.present?
+
+      @classrooms = ClassRoom.where(course_id: course_ids)
+      
+      render jsonapi: @classrooms,
+             class: { ClassRoom: SerializableClassRoom },
+             status: :ok
     end
 
     def show

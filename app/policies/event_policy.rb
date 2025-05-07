@@ -29,6 +29,10 @@ class EventPolicy < ApplicationPolicy
     admin?
   end
 
+  def classrooms_by_courses?
+    admin?
+  end
+
   private
 
   def admin?

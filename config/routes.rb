@@ -17,6 +17,9 @@ Rails.application.routes.draw do
     resources :courses
     resources :events do
       resources :participants, only: %i[index show destroy]
+      collection do
+        get :classrooms_by_courses
+      end
     end
     resources :courses do
       resources :class_rooms do
