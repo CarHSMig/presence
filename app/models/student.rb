@@ -5,8 +5,7 @@ class Student < ApplicationRecord
   has_one :user
   has_many :participants
 
-  validates :name, :ra, presence: true
-  validates :ra, uniqueness: true
+  validates :name, :ra, presence: true, uniqueness: true
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[id name ra]

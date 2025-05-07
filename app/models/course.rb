@@ -2,8 +2,8 @@
 
 class Course < ApplicationRecord
   has_many :students
-  has_many :events
   has_many :class_rooms
+  has_and_belongs_to_many :events
 
   validates :name, :periods, presence: true
 

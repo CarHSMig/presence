@@ -9,7 +9,7 @@ module Admin
     before_action -> { authorize(Event) }, only: %i[index create]
     before_action -> { authorize(@event) }, only: %i[show update destroy]
 
-    attr_reader :event, :class_room_ids
+    attr_reader :event, :class_room_ids, :course_ids
 
     def index
       events = policy_scope(Event)
@@ -26,13 +26,13 @@ module Admin
       @events = events.result.page(params[:page]).per(params[:per_page] || 10)
 
       render jsonapi: @events, include: include_options,
-             class: { Event: SerializableEvent, Course: SerializableCourse }, status: :ok
+             class: { Event: SerializableEvent, Course: SerializableCourse, ClassRoom: SerializableClassRoom }, status: :ok
     end
 
     def show
       if @event
         render jsonapi: @event, include: include_options,
-               class: { Event: SerializableEvent, Course: SerializableCourse }, status: :ok, meta: { presence_url: generate_presence_url }
+               class: { Event: SerializableEvent, Course: SerializableCourse, ClassRoom: SerializableClassRoom }, status: :ok, meta: { presence_url: generate_presence_url }
       else
         render json: { error: 'Evento não encontrado' }, status: :not_found
       end
@@ -42,6 +42,7 @@ module Admin
       @event = Event.new(event_params)
       get_location(event_params['location'])
       @class_room_ids = event_params['class_room_ids']
+      @course_ids = event_params['course_ids']
 
       return if common_validates
 
@@ -60,9 +61,7 @@ module Admin
 
       location = event_params['location']
 
-      if location.present?
-        get_location(location)
-      end
+      get_location(location) if location.present?
 
       return if common_validates
 
@@ -80,7 +79,7 @@ module Admin
       if @event.valid?
         @event.delete
         render jsonapi: @event, include: include_options,
-               class: { Event: SerializableEvent, Course: SerializableCourse }, status: :ok
+               class: { Event: SerializableEvent, Course: SerializableCourse, ClassRoom: SerializableClassRoom }, status: :ok
       else
         render json: @event.errors, status: :not_found
       end
@@ -94,15 +93,16 @@ module Admin
 
     def event_params
       params.require(:data).require(:attributes).permit(
-        :name, :description, :event_start, :event_end, :course_id, :location, class_room_ids: []
+        :name, :description, :event_start, :event_end, :location, course_ids: [], class_room_ids: []
       )
     end
 
     def handle_event_save_tasks
       create_class_rooms_events
+      create_courses_events
       generate_participants
       render jsonapi: @event, include: include_options,
-             class: { Event: SerializableEvent, Course: SerializableCourse }, status: :ok, meta: { presence_url: generate_presence_url }
+             class: { Event: SerializableEvent, Course: SerializableCourse, ClassRoom: SerializableClassRoom }, status: :ok, meta: { presence_url: generate_presence_url }
     end
 
     def common_validates
@@ -140,10 +140,23 @@ module Admin
 
       class_room_ids.each do |class_room_id|
         class_room = ClassRoom.find_by(id: class_room_id)
-        return if class_room&.course_id == event.course_id
+        next if (course_ids & [class_room.course_id]).any?
 
-        render json: { error: "A turma #{class_room.name} não pertence ao curso #{event.course.name}" },
+        render json: { error: "A turma #{class_room.name} não pertence a nenhum dos cursos associados ao evento" },
                status: :unprocessable_entity
+        return true
+      end
+
+      false
+    end
+
+    def create_courses_events
+      return unless course_ids.present?
+
+      course_ids.each do |course_id|
+        unless CoursesEvent.exists?(event_id: event.id, course_id: course_id)
+          CoursesEvent.create(event_id: event.id, course_id: course_id)
+        end
       end
     end
 
@@ -158,12 +171,16 @@ module Admin
     end
 
     def generate_participants
-      class_rooms = ClassRoom.where(course_id: event.course_id)
-      student_ids = Student.where(class_room_id: class_rooms.pluck(:id)).pluck(:id)
+      return unless course_ids.present?
 
-      student_ids.each do |student_id|
-        unless Participant.exists?(event_id: event.id, student_id: student_id)
-          Participant.create(event_id: event.id, student_id: student_id, present: false, location: nil)
+      course_ids.each do |course_id|
+        class_rooms = ClassRoom.where(course_id: course_id)
+        student_ids = Student.where(class_room_id: class_rooms.pluck(:id)).pluck(:id)
+
+        student_ids.each do |student_id|
+          unless Participant.exists?(event_id: event.id, student_id: student_id)
+            Participant.create(event_id: event.id, student_id: student_id, present: false, location: nil)
+          end
         end
       end
     end
