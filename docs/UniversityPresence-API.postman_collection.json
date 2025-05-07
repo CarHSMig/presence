@@ -90,7 +90,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/admin/courses/:course_id",
+							"raw": "{{URL}}/admin/courses/:course_id?include=class_rooms",
 							"host": [
 								"{{URL}}"
 							],
@@ -99,10 +99,16 @@
 								"courses",
 								":course_id"
 							],
+							"query": [
+								{
+									"key": "include",
+									"value": "class_rooms"
+								}
+							],
 							"variable": [
 								{
 									"key": "course_id",
-									"value": "c9c54c21-88db-4c21-a713-93af497b9b20"
+									"value": "1e5ef79d-3b00-4dfa-a06b-ff8880f93457"
 								}
 							]
 						}
@@ -452,7 +458,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/admin/events/:event_id",
+							"raw": "{{URL}}/admin/events/:event_id?include=courses,class_rooms",
 							"host": [
 								"{{URL}}"
 							],
@@ -461,10 +467,16 @@
 								"events",
 								":event_id"
 							],
+							"query": [
+								{
+									"key": "include",
+									"value": "courses,class_rooms"
+								}
+							],
 							"variable": [
 								{
 									"key": "event_id",
-									"value": "4e37205f-c938-48f6-bc57-c1e6891bb797"
+									"value": "d7656add-13fa-4cb5-a928-a2a62d8c034e"
 								}
 							]
 						}
@@ -488,7 +500,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"product\",\r\n        \"attributes\": {\r\n            \"name\": \"Evento que não deve aparecer\",\r\n            \"description\": \"Trabalho de Desenvolvimento Mobile\",\r\n            \"event_start\": \"2025-07-25T19:43:10\",\r\n            \"event_end\": \"2025-07-25T19:50:20\",\r\n            \"course_id\": \"314ace91-af2c-417a-a670-acbc71d87f48\",\r\n            \"location\": \"Unipar francisco beltrão\",\r\n            \"class_room_ids\": [\r\n                \"14643da8-fe5d-4563-8f72-2c3de37a6535\"\r\n            ]\r\n        }\r\n    }\r\n}",
+							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"event\",\r\n        \"attributes\": {\r\n            \"name\": \"Evento que não deve aparecer\",\r\n            \"description\": \"Trabalho de Desenvolvimento Mobile\",\r\n            \"event_start\": \"2025-07-25T19:43:10\",\r\n            \"event_end\": \"2025-07-25T19:50:20\",\r\n            \"location\": \"Unipar francisco beltrão\",\r\n            \"course_ids\": [\"1e5ef79d-3b00-4dfa-a06b-ff8880f93457\"],\r\n            \"class_room_ids\": [\r\n                \"5d1e1466-7b4a-4f51-9299-b1a86a14795e\"\r\n            ]\r\n        }\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -496,7 +508,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/admin/events?include=course",
+							"raw": "{{URL}}/admin/events?include=courses,class_rooms",
 							"host": [
 								"{{URL}}"
 							],
@@ -507,7 +519,7 @@
 							"query": [
 								{
 									"key": "include",
-									"value": "course"
+									"value": "courses,class_rooms"
 								}
 							]
 						}
@@ -627,7 +639,7 @@
 							"variable": [
 								{
 									"key": "course_id",
-									"value": "314ace91-af2c-417a-a670-acbc71d87f48"
+									"value": "ec3144ab-e97e-4310-b101-b62fc06dbe2e"
 								}
 							]
 						}
@@ -695,7 +707,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/admin/courses/:course_id/class_rooms/:class_room_id?include=course",
+							"raw": "{{URL}}/admin/courses/:course_id/class_rooms/:class_room_id?include=course,students",
 							"host": [
 								"{{URL}}"
 							],
@@ -709,17 +721,17 @@
 							"query": [
 								{
 									"key": "include",
-									"value": "course"
+									"value": "course,students"
 								}
 							],
 							"variable": [
 								{
 									"key": "course_id",
-									"value": ""
+									"value": "c079871e-70e9-43ae-b42b-6a97d6b23479"
 								},
 								{
 									"key": "class_room_id",
-									"value": ""
+									"value": "7f36481b-056a-40b6-b176-db99cf033cdb"
 								}
 							]
 						}
@@ -1213,53 +1225,6 @@
 								{
 									"key": "class_room_id",
 									"value": "9841f595-245a-42c4-90ab-c9b5313f06b6"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "delete student",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{URL}}/admin/courses/:course_id/class_rooms/:class_room_id/students/:students_id",
-							"host": [
-								"{{URL}}"
-							],
-							"path": [
-								"admin",
-								"courses",
-								":course_id",
-								"class_rooms",
-								":class_room_id",
-								"students",
-								":students_id"
-							],
-							"variable": [
-								{
-									"key": "course_id",
-									"value": "42372d74-5024-4eae-9dfb-229fbafb014d"
-								},
-								{
-									"key": "class_room_id",
-									"value": "f8f70808-fa53-4c09-806d-241b5980a036"
-								},
-								{
-									"key": "students_id",
-									"value": "51cf0e26-e149-4bdc-beca-1b0f477da6b2"
 								}
 							]
 						}
