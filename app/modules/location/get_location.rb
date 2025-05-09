@@ -10,13 +10,11 @@ module Location
     end
 
     def get_location
-      if location.present?
-        serch_location = URI.encode_www_form_component(location)
-        response = HTTParty.get("https://nominatim.openstreetmap.org/search?q=#{serch_location}&format=json&limit=1&addressdetails=")
-        JSON.parse(response.body)
-      else
-        raise ArgumentError, 'Latitude and longitude are required'
-      end
+      raise ArgumentError, 'Latitude and longitude are required' unless location.present?
+
+      serch_location = URI.encode_www_form_component(location)
+      response = HTTParty.get("https://nominatim.openstreetmap.org/search?q=#{serch_location}&format=json&limit=1&addressdetails=")
+      JSON.parse(response.body)
     end
 
     def perform

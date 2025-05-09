@@ -31,13 +31,17 @@ module Admin
 
     def classrooms_by_courses
       course_ids = params[:course_ids]
-      
-      return render json: { error: 'IDs dos cursos não fornecidos' }, status: :unprocessable_entity unless course_ids.present?
 
-      @classrooms = ClassRoom.where(course_id: course_ids)
-      
+      unless course_ids.present?
+        return render json: { error: 'IDs dos cursos não fornecidos' },
+                      status: :unprocessable_entity
+      end
+
+      @classrooms = ClassRoom.where(course_id: course_ids).includes(:course)
+
       render jsonapi: @classrooms,
-             class: { ClassRoom: SerializableClassRoom },
+             class: { ClassRoom: SerializableClassRoom, Course: SerializableCourse },
+             include: [:course],
              status: :ok
     end
 
