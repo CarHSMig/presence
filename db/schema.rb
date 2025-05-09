@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_24_015621) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_07_004613) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -34,24 +34,31 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_24_015621) do
   end
 
   create_table "courses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name"
-    t.integer "periods"
+    t.string "name", null: false
+    t.integer "periods", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name"
-    t.string "description"
-    t.datetime "event_start"
-    t.datetime "event_end"
+  create_table "courses_events", id: false, force: :cascade do |t|
+    t.uuid "event_id", null: false
     t.uuid "course_id", null: false
+    t.index ["course_id", "event_id"], name: "index_courses_events_on_course_id_and_event_id"
+    t.index ["course_id"], name: "index_courses_events_on_course_id"
+    t.index ["event_id", "course_id"], name: "index_courses_events_on_event_id_and_course_id", unique: true
+    t.index ["event_id"], name: "index_courses_events_on_event_id"
+  end
+
+  create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "description"
+    t.datetime "event_start", null: false
+    t.datetime "event_end", null: false
     t.jsonb "location", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "latitude", precision: 15, scale: 10, null: false
     t.decimal "longitude", precision: 15, scale: 10, null: false
-    t.index ["course_id"], name: "index_events_on_course_id"
   end
 
   create_table "participants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -76,8 +83,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_24_015621) do
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name"
-    t.string "email"
+    t.string "name", null: false
+    t.string "email", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "encrypted_password", default: "", null: false
@@ -94,9 +101,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_24_015621) do
   add_foreign_key "class_rooms", "courses", on_update: :cascade, on_delete: :cascade
   add_foreign_key "class_rooms_events", "class_rooms"
   add_foreign_key "class_rooms_events", "events"
-  add_foreign_key "events", "courses", on_update: :cascade
+  add_foreign_key "courses_events", "courses"
+  add_foreign_key "courses_events", "events"
   add_foreign_key "participants", "events", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "participants", "students", on_update: :cascade
+  add_foreign_key "participants", "students", on_update: :cascade, on_delete: :nullify
   add_foreign_key "students", "class_rooms", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "users", "students"
+  add_foreign_key "users", "students", on_update: :cascade, on_delete: :cascade
 end
