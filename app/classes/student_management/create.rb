@@ -17,12 +17,12 @@ module StudentManagement
     def perform
       ActiveRecord::Base.transaction do
         student = create_student
-        user = create_user(student)
-        if user.valid?
-          UserMailer.with(user: user).welcome_email.deliver_now
-        else
-          raise ActiveRecord::Rollback
-        end
+        # create_user(student)
+        # if user.valid?
+        #   UserMailer.with(user: user).welcome_email.deliver_now
+        # else
+        #   raise ActiveRecord::Rollback
+        # end
         student
       end
     end
