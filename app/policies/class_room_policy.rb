@@ -19,6 +19,10 @@ class ClassRoomPolicy < ApplicationPolicy
     admin?
   end
 
+  def batch?
+    admin?
+  end
+
   private
 
   def admin?

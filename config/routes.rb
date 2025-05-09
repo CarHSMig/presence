@@ -23,6 +23,9 @@ Rails.application.routes.draw do
     end
     resources :courses do
       resources :class_rooms do
+        collection do
+          post :batch
+        end
         resources :students do
           collection do
             post :import

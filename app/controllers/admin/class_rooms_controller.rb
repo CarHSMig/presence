@@ -5,7 +5,7 @@ module Admin
     before_action :authenticate_user_with_jwt
     before_action :set_class_room, only: %i[show update destroy]
 
-    before_action -> { authorize(ClassRoom) }, only: %i[index create]
+    before_action -> { authorize(ClassRoom) }, only: %i[index create batch]
     before_action -> { authorize(@class_room) }, only: %i[show update destroy]
 
     def index
@@ -63,6 +63,20 @@ module Admin
       end
     end
 
+    def batch
+      return render json: { error: 'Parâmetros inválidos' }, status: :bad_request unless params[:data]&.key?(:operations)
+
+      operations = batch_params[:operations]
+      processor = ClassRoomManagement::BatchProcessor.new(params[:course_id])
+      results = processor.process(operations)
+
+      if results[:errors].any?
+        render json: { errors: results[:errors] }, status: :unprocessable_entity
+      else
+        render json: { data: results[:success] }, status: :ok
+      end
+    end
+
     private
 
     def set_class_room
@@ -75,6 +89,10 @@ module Admin
 
     def class_room_params_with_course
       class_room_params.merge(course_id: params[:course_id])
+    end
+
+    def batch_params
+      params.require(:data).permit(operations: [:action, :id, attributes: [:name, :period]])
     end
 
     def validate_class_room_period
