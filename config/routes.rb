@@ -16,7 +16,11 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :courses
     resources :events do
-      resources :participants, only: %i[index show destroy]
+      resources :participants, only: %i[index show destroy] do
+        collection do
+          get :export_participants
+        end
+      end
       collection do
         get :classrooms_by_courses
       end
