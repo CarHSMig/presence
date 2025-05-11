@@ -25,13 +25,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/admin/courses",
+							"raw": "{{URL}}/admin/courses?include=class_rooms",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"admin",
 								"courses"
+							],
+							"query": [
+								{
+									"key": "include",
+									"value": "class_rooms"
+								}
 							]
 						}
 					},
@@ -476,7 +482,7 @@
 							"variable": [
 								{
 									"key": "event_id",
-									"value": "d7656add-13fa-4cb5-a928-a2a62d8c034e"
+									"value": "55026a61-474e-41ab-b333-da8b178425e6"
 								}
 							]
 						}
@@ -500,7 +506,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"event\",\r\n        \"attributes\": {\r\n            \"name\": \"Evento que não deve aparecer\",\r\n            \"description\": \"Trabalho de Desenvolvimento Mobile\",\r\n            \"event_start\": \"2025-07-25T19:43:10\",\r\n            \"event_end\": \"2025-07-25T19:50:20\",\r\n            \"location\": \"Unipar francisco beltrão\",\r\n            \"course_ids\": [\"1e5ef79d-3b00-4dfa-a06b-ff8880f93457\"],\r\n            \"class_room_ids\": [\r\n                \"5d1e1466-7b4a-4f51-9299-b1a86a14795e\"\r\n            ]\r\n        }\r\n    }\r\n}",
+							"raw": "{\r\n    \"data\": {\r\n        \"type\": \"event\",\r\n        \"attributes\": {\r\n            \"name\": \"Evento simulado de teste\",\r\n            \"description\": \"Curso de apresentação da turma de apresentação para testar se tudo ocorre como esperado  de apresentação da teste lalalala meu deus o que aconteceu aqui de verdade, tomara que de certo\",\r\n            \"event_start\": \"2025-05-09T18:32:00\",\r\n            \"event_end\": \"2025-05-09T18:33:00\",\r\n            \"course_ids\": [\r\n                \"da06e1ae-ccfc-4456-ace1-89406b16e4b7\"\r\n            ],\r\n            \"location\": \"Universidade Paranaense UNIPAR\",\r\n            \"class_room_ids\": [\r\n                \"4826623e-290c-41ff-a874-ee57c1336521\"\r\n            ]\r\n        }\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -604,6 +610,45 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "classrooms_by_courses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/events/classrooms_by_courses?course_ids[]=1e5ef79d-3b00-4dfa-a06b-ff8880f93457&course_ids[]=4e549f17-efec-4f87-a9ad-1f9197124b25",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"events",
+								"classrooms_by_courses"
+							],
+							"query": [
+								{
+									"key": "course_ids[]",
+									"value": "1e5ef79d-3b00-4dfa-a06b-ff8880f93457"
+								},
+								{
+									"key": "course_ids[]",
+									"value": "4e549f17-efec-4f87-a9ad-1f9197124b25"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -639,7 +684,7 @@
 							"variable": [
 								{
 									"key": "course_id",
-									"value": "ec3144ab-e97e-4310-b101-b62fc06dbe2e"
+									"value": "1e5ef79d-3b00-4dfa-a06b-ff8880f93457"
 								}
 							]
 						}
@@ -684,7 +729,53 @@
 							"variable": [
 								{
 									"key": "course_id",
-									"value": "42372d74-5024-4eae-9dfb-229fbafb014d"
+									"value": "da06e1ae-ccfc-4456-ace1-89406b16e4b7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create ClassRoom Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"data\": {\r\n    \"operations\": [\r\n      {\r\n        \"action\": \"create\",\r\n        \"attributes\": {\r\n          \"name\": \"Turma do batch\",\r\n          \"period\": 1\r\n        }\r\n      },\r\n      {\r\n        \"action\": \"update\",\r\n        \"id\": \"5d1e1466-7b4a-4f51-9299-b1a86a14795e\",\r\n        \"attributes\": {\r\n          \"name\": \"Turma A Atualizada\",\r\n          \"period\": 2\r\n        }\r\n      }\r\n    ]\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/admin/courses/:course_id/class_rooms/batch",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"courses",
+								":course_id",
+								"class_rooms",
+								"batch"
+							],
+							"variable": [
+								{
+									"key": "course_id",
+									"value": "1e5ef79d-3b00-4dfa-a06b-ff8880f93457"
 								}
 							]
 						}
@@ -868,11 +959,11 @@
 							"variable": [
 								{
 									"key": "course_id",
-									"value": "42372d74-5024-4eae-9dfb-229fbafb014d"
+									"value": "abda51ff-e02c-47d4-9cd9-d28f9a1f9fad"
 								},
 								{
 									"key": "class_room_id",
-									"value": "f8f70808-fa53-4c09-806d-241b5980a036"
+									"value": "64845960-d5c3-479e-a0ab-fcf4c0744f86"
 								}
 							]
 						}
@@ -1101,7 +1192,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Users/carlo/Downloads/Planilha sem título.xlsx"
+									"src": "/C:/Users/carlo/Downloads/importacaofinal.xlsx"
 								}
 							]
 						},
@@ -1122,11 +1213,15 @@
 							"variable": [
 								{
 									"key": "course_id",
-									"value": "3e06bb78-fd1c-4650-9fcc-d87b64423d2d"
+									"value": "a5c35879-fb16-4ec9-8627-f8d2633a44a9"
 								},
 								{
 									"key": "class_room_id",
-									"value": "9841f595-245a-42c4-90ab-c9b5313f06b6"
+									"value": "ff8565dd-2129-4973-9254-f7b412414f0a"
+								},
+								{
+									"key": "class_room_id",
+									"value": "ff8565dd-2129-4973-9254-f7b412414f0a"
 								}
 							]
 						}
@@ -1171,11 +1266,11 @@
 							"variable": [
 								{
 									"key": "course_id",
-									"value": "3e06bb78-fd1c-4650-9fcc-d87b64423d2d"
+									"value": "a5c35879-fb16-4ec9-8627-f8d2633a44a9"
 								},
 								{
 									"key": "class_room_id",
-									"value": "9841f595-245a-42c4-90ab-c9b5313f06b6"
+									"value": "ff8565dd-2129-4973-9254-f7b412414f0a"
 								}
 							]
 						}
@@ -1432,6 +1527,92 @@
 								},
 								{
 									"key": "participant_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show participant Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/events/:event_id/participants/export_participants?format=",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"events",
+								":event_id",
+								"participants",
+								"export_participants"
+							],
+							"query": [
+								{
+									"key": "format",
+									"value": ""
+								}
+							],
+							"variable": [
+								{
+									"key": "event_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show participant Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/events/:event_id/participants/export_participants?format=",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"events",
+								":event_id",
+								"participants",
+								"export_participants"
+							],
+							"query": [
+								{
+									"key": "format",
+									"value": ""
+								}
+							],
+							"variable": [
+								{
+									"key": "event_id",
 									"value": ""
 								}
 							]
