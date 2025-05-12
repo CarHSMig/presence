@@ -25,7 +25,7 @@ module Participants
           sheet.add_row [
             participant.student.name,
             participant.present ? 'Sim' : 'Não',
-            participant.location,
+            format_location(participant.location),
             participant.updated_at.strftime('%d/%m/%Y %H:%M')
           ], style: style
         end
