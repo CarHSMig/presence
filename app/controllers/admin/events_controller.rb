@@ -76,7 +76,8 @@ module Admin
       @event&.assign_attributes(event_params)
 
       location = event_params['location']
-
+      @class_room_ids = event_params['class_room_ids']
+      @course_ids = event_params['course_ids']
       get_location(location) if location.present?
 
       return if common_validates
@@ -187,11 +188,12 @@ module Admin
     end
 
     def generate_participants
+      byebug
       return unless class_room_ids.present?
 
       class_room_ids.each do |class_room_id|
         students = Student.where(class_room_id: class_room_id)
-        
+
         students.each do |student|
           unless Participant.exists?(event_id: event.id, student_id: student.id)
             Participant.create(
