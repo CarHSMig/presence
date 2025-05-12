@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_07_004613) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_07_004614) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -79,7 +79,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_07_004613) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["class_room_id"], name: "index_students_on_class_room_id"
-    t.index ["ra"], name: "index_students_on_ra", unique: true
+    t.index ["name", "class_room_id"], name: "index_students_on_name_and_class_room_id", unique: true
+    t.index ["ra", "class_room_id"], name: "index_students_on_ra_and_class_room_id", unique: true
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
