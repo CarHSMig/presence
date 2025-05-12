@@ -188,7 +188,6 @@ module Admin
     end
 
     def generate_participants
-      byebug
       return unless class_room_ids.present?
 
       class_room_ids.each do |class_room_id|
