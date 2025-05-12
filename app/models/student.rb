@@ -5,7 +5,9 @@ class Student < ApplicationRecord
   has_one :user
   has_many :participants
 
-  validates :name, :ra, presence: true, uniqueness: true
+  validates :name, :ra, presence: true
+  validates :ra, uniqueness: { scope: :class_room_id, message: 'já está em uso nesta turma' }
+  validates :name, uniqueness: { scope: :class_room_id, message: 'já está em uso nesta turma' }
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[id name ra]
