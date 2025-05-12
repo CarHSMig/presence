@@ -10,9 +10,9 @@ module StudentManagement
     def call
       case File.extname(@file_path).downcase
       when '.xlsx'
-        ImportStudent::ImportXlsx.new(@file_path, @class_room_id).call
+        Students::ImportStudent::ImportXlsx.new(@file_path, @class_room_id).call
       when '.csv'
-        ImportStudent::ImportCsv.new(@file_path, @class_room_id).call
+        Students::ImportStudent::ImportCsv.new(@file_path, @class_room_id).call
       else
         raise StandardError, 'Formato de arquivo não suportado. Envie um arquivo .xlsx ou .csv'
       end

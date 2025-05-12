@@ -2,11 +2,16 @@
 
 module Admin
   class ParticipantsController < ApplicationController
-    before_action :authenticate_user_with_jwt, only: %i[index show destroy]
+    before_action :authenticate_user_with_jwt, only: %i[index show destroy export_participants]
+
     attr_reader :participant
 
+    before_action :set_participant, only: %i[show destroy]
+
+    before_action -> { authorize(Participant) }, only: %i[index export_participants]
+    before_action -> { authorize(@participant) }, only: %i[show destroy]
+
     def index
-      authorize(Participant)
       participants = Participant.includes(:student).where(event_id: event_id)
       participants = participants.ransack(params[:q])
       @participants = participants.result.page(params[:page]).per(params[:per_page] || 10)
@@ -20,7 +25,6 @@ module Admin
 
     def show
       @participant = Participant.find_by(id: find_params, event_id: event_id)
-      authorize(@participant)
       if @participant
         render jsonapi: @participants, include: include_options,
                class: { Participant: SerializableParticipant, Event: SerializableEvent, Student: SerializableStudent }, status: :ok
@@ -31,8 +35,7 @@ module Admin
 
     def destroy
       @participant = Participant.find_by(id: find_params, event_id: event_id)
-      authorize(@participant)
-      return render json: { error: 'Evento não encontrado' }, status: :not_found unless @event
+      return render json: { error: 'Participante não encontrado' }, status: :not_found unless @participant
 
       if @participant.valid?
         @participant.delete
@@ -43,12 +46,36 @@ module Admin
       end
     end
 
+    def export_participants
+      participants = Participant.includes(:student).where(event_id: event_id)
+      participants = participants.ransack(params[:q]).result if params[:q].present?
+
+      case params[:format]
+      when 'csv'
+        send_data Participants::ExportCsv.new(participants).call,
+                  filename: "participantes_#{Time.current.strftime('%Y%m%d_%H%M%S')}.csv",
+                  type: 'text/csv',
+                  disposition: 'attachment'
+      when 'xlsx'
+        send_data Participants::ExportXlsx.new(participants).call,
+                  filename: "participantes_#{Time.current.strftime('%Y%m%d_%H%M%S')}.xlsx",
+                  type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                  disposition: 'attachment'
+      else
+        render json: { error: 'Formato de exportação não suportado' }, status: :unprocessable_entity
+      end
+    end
+
     private
 
     def participant_params
       params.require(:data).require(:attributes).permit(
         :present, :location
       )
+    end
+
+    def set_participant
+      @participant = Participant.find_by(id: find_params, event_id: event_id)
     end
 
     def event_id

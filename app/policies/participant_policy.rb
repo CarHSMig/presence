@@ -11,6 +11,10 @@ class ParticipantPolicy < ApplicationPolicy
     admin?
   end
 
+  def export_participants?
+    admin?
+  end
+
   private
 
   def admin?

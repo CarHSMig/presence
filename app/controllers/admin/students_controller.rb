@@ -105,7 +105,7 @@ module Admin
     end
 
     def template
-      template_service = ImportStudent::ImportTemplate.new(params)
+      template_service = Students::ImportStudent::ImportTemplate.new(params)
       file_content = template_service.template
       format = params[:format].to_s.downcase
 
