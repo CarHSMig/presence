@@ -2,13 +2,13 @@
 
 module Admin
   class ParticipantsController < ApplicationController
-    before_action :authenticate_user_with_jwt, only: %i[index show destroy export_participants]
+    before_action :authenticate_user_with_jwt, only: %i[index show destroy]
 
     attr_reader :participant
 
     before_action :set_participant, only: %i[show destroy]
 
-    before_action -> { authorize(Participant) }, only: %i[index export_participants]
+    before_action -> { authorize(Participant) }, only: %i[index]
     before_action -> { authorize(@participant) }, only: %i[show destroy]
 
     def index
@@ -47,18 +47,21 @@ module Admin
     end
 
     def export_participants
-      participants = Participant.includes(:student).where(event_id: event_id)
+      event = Event.find_by(id: event_id)
+      return render json: { error: 'Evento não encontrado' }, status: :not_found unless event
+
+      participants = Participant.includes(:student).where(event: event)
       participants = participants.ransack(params[:q]).result if params[:q].present?
 
       case params[:format]
       when 'csv'
         send_data Participants::ExportCsv.new(participants).call,
-                  filename: "participantes_#{Time.current.strftime('%Y%m%d_%H%M%S')}.csv",
+                  filename: "#{event.name} #{format_datetime}.csv",
                   type: 'text/csv',
                   disposition: 'attachment'
       when 'xlsx'
         send_data Participants::ExportXlsx.new(participants).call,
-                  filename: "participantes_#{Time.current.strftime('%Y%m%d_%H%M%S')}.xlsx",
+                  filename: "#{event.name} #{format_datetime}.xlsx",
                   type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                   disposition: 'attachment'
       else
@@ -67,6 +70,10 @@ module Admin
     end
 
     private
+
+    def format_datetime
+      Time.current.strftime('%d-%m-%Y_%H-%M')
+    end
 
     def participant_params
       params.require(:data).require(:attributes).permit(
