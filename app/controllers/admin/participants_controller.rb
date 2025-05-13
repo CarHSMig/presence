@@ -2,13 +2,13 @@
 
 module Admin
   class ParticipantsController < ApplicationController
-    before_action :authenticate_user_with_jwt, only: %i[index show destroy export_participants]
+    before_action :authenticate_user_with_jwt, only: %i[index show destroy]
 
     attr_reader :participant
 
     before_action :set_participant, only: %i[show destroy]
 
-    before_action -> { authorize(Participant) }, only: %i[index export_participants]
+    before_action -> { authorize(Participant) }, only: %i[index]
     before_action -> { authorize(@participant) }, only: %i[show destroy]
 
     def index
