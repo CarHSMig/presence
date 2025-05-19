@@ -26,7 +26,7 @@ module Admin
       @events = events.result.page(params[:page]).per(params[:per_page] || 10)
 
       render jsonapi: @events, include: include_options,
-             class: { Event: SerializableEvent, Course: SerializableCourse, ClassRoom: SerializableClassRoom }, status: :ok
+             class: { Event: SerializableEvent, Course: SerializableCourse, ClassRoom: SerializableClassRoom, User: SerializableUser }, status: :ok
     end
 
     def classrooms_by_courses
@@ -48,7 +48,7 @@ module Admin
     def show
       if @event
         render jsonapi: @event, include: include_options,
-               class: { Event: SerializableEvent, Course: SerializableCourse, ClassRoom: SerializableClassRoom }, status: :ok, meta: { presence_url: generate_presence_url }
+               class: { Event: SerializableEvent, Course: SerializableCourse, ClassRoom: SerializableClassRoom, User: SerializableUser }, status: :ok, meta: { presence_url: generate_presence_url }
       else
         render json: { error: 'Evento não encontrado' }, status: :not_found
       end
@@ -56,6 +56,7 @@ module Admin
 
     def create
       @event = Event.new(event_params)
+      @event.creator = current_user
       get_location(event_params['location'])
       @class_room_ids = event_params['class_room_ids']
       @course_ids = event_params['course_ids']
@@ -96,7 +97,7 @@ module Admin
       if @event.valid?
         @event.delete
         render jsonapi: @event, include: include_options,
-               class: { Event: SerializableEvent, Course: SerializableCourse, ClassRoom: SerializableClassRoom }, status: :ok
+               class: { Event: SerializableEvent, Course: SerializableCourse, ClassRoom: SerializableClassRoom, User: SerializableUser }, status: :ok
       else
         render json: @event.errors, status: :not_found
       end
@@ -119,7 +120,7 @@ module Admin
       create_courses_events
       generate_participants
       render jsonapi: @event, include: include_options,
-             class: { Event: SerializableEvent, Course: SerializableCourse, ClassRoom: SerializableClassRoom }, status: :ok, meta: { presence_url: generate_presence_url }
+             class: { Event: SerializableEvent, Course: SerializableCourse, ClassRoom: SerializableClassRoom, User: SerializableUser }, status: :ok, meta: { presence_url: generate_presence_url }
     end
 
     def common_validates

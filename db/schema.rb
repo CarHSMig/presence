@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_19_201304) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_19_224510) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -60,6 +60,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_201304) do
     t.decimal "latitude", precision: 15, scale: 10, null: false
     t.decimal "longitude", precision: 15, scale: 10, null: false
     t.boolean "location_optional", default: true, null: false
+    t.uuid "creator_id"
+    t.index ["creator_id"], name: "index_events_on_creator_id"
   end
 
   create_table "participants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -105,6 +107,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_201304) do
   add_foreign_key "class_rooms_events", "events"
   add_foreign_key "courses_events", "courses"
   add_foreign_key "courses_events", "events"
+  add_foreign_key "events", "users", column: "creator_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "participants", "events", on_update: :cascade, on_delete: :cascade
   add_foreign_key "participants", "students", on_update: :cascade, on_delete: :nullify
   add_foreign_key "students", "class_rooms", on_update: :cascade, on_delete: :cascade
