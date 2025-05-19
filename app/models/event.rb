@@ -13,7 +13,7 @@ class Event < ApplicationRecord
   scope :in_progress, -> { where('event_start < ? AND event_end > ?', Time.current, Time.current) }
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[id name description event_start event_end latitude longitude location_optional creator_id]
+    %w[id name description event_start event_end location latitude longitude location_optional creator_id]
   end
 
   def self.ransackable_associations(_auth_object = nil)
