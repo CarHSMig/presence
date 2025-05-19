@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_07_004614) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_19_201304) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -59,6 +59,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_07_004614) do
     t.datetime "updated_at", null: false
     t.decimal "latitude", precision: 15, scale: 10, null: false
     t.decimal "longitude", precision: 15, scale: 10, null: false
+    t.boolean "location_optional", default: true, null: false
   end
 
   create_table "participants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
