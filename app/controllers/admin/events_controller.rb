@@ -110,7 +110,7 @@ module Admin
 
     def event_params
       params.require(:data).require(:attributes).permit(
-        :name, :description, :event_start, :event_end, :location, course_ids: [], class_room_ids: []
+        :name, :description, :event_start, :event_end, :location, :location_optional, course_ids: [], class_room_ids: []
       )
     end
 

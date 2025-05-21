@@ -3,7 +3,7 @@
 class SerializableEvent < JSONAPI::Serializable::Resource
   type :event
 
-  attributes :id, :name, :description, :event_start, :event_end, :location, :latitude, :longitude
+  attributes :id, :name, :description, :event_start, :event_end, :location_optional, :location, :latitude, :longitude
 
   has_many :courses
   has_many :class_rooms
