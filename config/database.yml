@@ -8,13 +8,13 @@ default: &default
 
 development:
   <<: *default
-  database: univerity_presence_api_development
+  database: presence_api_development
 
 test:
   <<: *default
-  database: univerity_presence_api_test
+  database: presence_api_test
 
 production:
   <<: *default
-  database: univerity_presence_api_production
+  database: presence_api_production
   url: <%= ENV["DATABASE_URL"] %>

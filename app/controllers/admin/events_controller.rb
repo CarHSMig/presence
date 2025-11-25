@@ -154,11 +154,19 @@ module Admin
     end
 
     def validate_classroom_course
-      return unless class_room_ids.present?
+      return false unless class_room_ids.present?
+      return false unless course_ids.present?
 
       class_room_ids.each do |class_room_id|
         class_room = ClassRoom.find_by(id: class_room_id)
-        next if (course_ids & [class_room.course_id]).any?
+        
+        unless class_room
+          render json: { error: "Turma com ID #{class_room_id} não encontrada" },
+                 status: :unprocessable_entity
+          return true
+        end
+
+        next if course_ids.include?(class_room.course_id)
 
         render json: { error: "A turma #{class_room.name} não pertence a nenhum dos cursos associados ao evento" },
                status: :unprocessable_entity

@@ -18,7 +18,7 @@ module Location
 
     def get_location
       if latitude.present? && longitude.present?
-        response = HTTParty.get("https://nominatim.openstreetmap.org/reverse?lat=#{latitude}&lon=#{longitude}&format=json")
+        response = HTTParty.get("https://nominatim.openstreetmap.org/reverse?lat=#{latitude}&lon=#{longitude}&format=json", headers: { 'User-Agent' => 'carloshenriquedossantosmigon@gmail.com' })
         JSON.parse(response.body)
       else
         raise ArgumentError, 'Latitude and longitude are required'

@@ -2,7 +2,9 @@
 max_threads_count = ENV.fetch("RAILS_MAX_THREADS") { 5 }
 min_threads_count = ENV.fetch("RAILS_MIN_THREADS") { max_threads_count }
 threads min_threads_count, max_threads_count
-bind 'unix:///home/ubuntu/UniversityPresence-API/tmp/sockets/puma.sock'
+if Rails.env.production?
+  bind 'unix:///home/ubuntu/UniversityPresence-API/tmp/sockets/puma.sock'
+end
 rails_env = ENV.fetch("RAILS_ENV") { "development" }
 
 if rails_env == "production"
@@ -14,7 +16,9 @@ if rails_env == "production"
   end
 end
 
-worker_timeout 3600 if ENV.fetch("RAILS_ENV", "development") == "development"
+if rails_env == "development"
+  worker_timeout 3600
+end
 
 port ENV.fetch("PORT") { 3000 }
 
