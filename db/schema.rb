@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_19_224510) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_27_221044) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
+  enable_extension "vector"
 
   create_table "class_rooms", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
@@ -61,8 +62,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_224510) do
     t.decimal "longitude", precision: 15, scale: 10, null: false
     t.boolean "location_optional", default: true, null: false
     t.uuid "creator_id"
+    t.boolean "face_auth", default: false
     t.index ["creator_id"], name: "index_events_on_creator_id"
   end
+
+# Could not dump table "facial_profiles" because of following StandardError
+#   Unknown type 'vector(512)' for column 'embedding'
+
 
   create_table "participants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "event_id", null: false
@@ -108,6 +114,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_224510) do
   add_foreign_key "courses_events", "courses"
   add_foreign_key "courses_events", "events"
   add_foreign_key "events", "users", column: "creator_id", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "facial_profiles", "students", on_update: :cascade, on_delete: :cascade
   add_foreign_key "participants", "events", on_update: :cascade, on_delete: :cascade
   add_foreign_key "participants", "students", on_update: :cascade, on_delete: :nullify
   add_foreign_key "students", "class_rooms", on_update: :cascade, on_delete: :cascade

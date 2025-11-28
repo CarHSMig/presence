@@ -41,3 +41,5 @@ group :development do
 end
 
 gem "pundit", "~> 2.5"
+
+gem "pgvector", "~> 0.3.2"

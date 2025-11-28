@@ -1,0 +1,411 @@
+{
+	"info": {
+		"name": "Face Auth & Embeddings Examples",
+		"description": "Exemplos de requisições para confirmar presença e criar embeddings",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Confirmar Presença",
+			"item": [
+				{
+					"name": "Confirmar Presença - Com Localização e Face Auth",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "data[attributes][ra]",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "data[attributes][latitude]",
+									"value": "-26.0534943",
+									"type": "text"
+								},
+								{
+									"key": "data[attributes][longitude]",
+									"value": "-53.0587302",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/participants/{{event_id}}/confirm_presence",
+							"host": ["{{URL}}"],
+							"path": ["participants", "{{event_id}}", "confirm_presence"]
+						},
+						"description": "Confirma presença com validação de localização e autenticação facial. Requer latitude, longitude e foto."
+					},
+					"response": []
+				},
+				{
+					"name": "Confirmar Presença - Apenas Localização",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "data[attributes][ra]",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "data[attributes][latitude]",
+									"value": "-26.0534943",
+									"type": "text"
+								},
+								{
+									"key": "data[attributes][longitude]",
+									"value": "-53.0587302",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/participants/{{event_id}}/confirm_presence",
+							"host": ["{{URL}}"],
+							"path": ["participants", "{{event_id}}", "confirm_presence"]
+						},
+						"description": "Confirma presença apenas com validação de localização. Requer latitude e longitude."
+					},
+					"response": []
+				},
+				{
+					"name": "Confirmar Presença - Apenas Face Auth",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "data[attributes][ra]",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/participants/{{event_id}}/confirm_presence",
+							"host": ["{{URL}}"],
+							"path": ["participants", "{{event_id}}", "confirm_presence"]
+						},
+						"description": "Confirma presença apenas com autenticação facial. Requer foto."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Estudantes - Embeddings",
+			"item": [
+				{
+					"name": "Criar Estudante com Embeddings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "data[attributes][name]",
+									"value": "João Silva",
+									"type": "text"
+								},
+								{
+									"key": "data[attributes][ra]",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "data[attributes][email]",
+									"value": "joao.silva@example.com",
+									"type": "text"
+								},
+								{
+									"key": "files[0]",
+									"type": "file",
+									"src": [],
+									"description": "Primeira foto do estudante"
+								},
+								{
+									"key": "files[1]",
+									"type": "file",
+									"src": [],
+									"description": "Segunda foto do estudante"
+								},
+								{
+									"key": "files[2]",
+									"type": "file",
+									"src": [],
+									"description": "Terceira foto do estudante (opcional, máximo 5)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/admin/courses/{{course_id}}/class_rooms/{{class_room_id}}/students",
+							"host": ["{{URL}}"],
+							"path": [
+								"admin",
+								"courses",
+								"{{course_id}}",
+								"class_rooms",
+								"{{class_room_id}}",
+								"students"
+							]
+						},
+						"description": "Cria um novo estudante e envia até 5 fotos para criar embeddings de reconhecimento facial."
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar Estudante com Novos Embeddings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "data[attributes][name]",
+									"value": "João Silva Atualizado",
+									"type": "text"
+								},
+								{
+									"key": "data[attributes][ra]",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "files[0]",
+									"type": "file",
+									"src": [],
+									"description": "Nova foto para adicionar embeddings"
+								},
+								{
+									"key": "files[1]",
+									"type": "file",
+									"src": [],
+									"description": "Segunda nova foto (opcional)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/admin/courses/{{course_id}}/class_rooms/{{class_room_id}}/students/{{student_id}}",
+							"host": ["{{URL}}"],
+							"path": [
+								"admin",
+								"courses",
+								"{{course_id}}",
+								"class_rooms",
+								"{{class_room_id}}",
+								"students",
+								"{{student_id}}"
+							]
+						},
+						"description": "Atualiza dados do estudante e adiciona novas fotos para criar embeddings adicionais."
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Estudante sem Embeddings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "data[attributes][name]",
+									"value": "Maria Santos",
+									"type": "text"
+								},
+								{
+									"key": "data[attributes][ra]",
+									"value": "789012",
+									"type": "text"
+								},
+								{
+									"key": "data[attributes][email]",
+									"value": "maria.santos@example.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/admin/courses/{{course_id}}/class_rooms/{{class_room_id}}/students",
+							"host": ["{{URL}}"],
+							"path": [
+								"admin",
+								"courses",
+								"{{course_id}}",
+								"class_rooms",
+								"{{class_room_id}}",
+								"students"
+							]
+						},
+						"description": "Cria um estudante sem enviar fotos. Os embeddings podem ser adicionados posteriormente via update."
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Múltiplos Estudantes com Embeddings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "data[0][attributes][name]",
+									"value": "João Silva",
+									"type": "text"
+								},
+								{
+									"key": "data[0][attributes][ra]",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "data[0][attributes][email]",
+									"value": "joao.silva@example.com",
+									"type": "text"
+								},
+								{
+									"key": "data[0][attributes][files][0]",
+									"type": "file",
+									"src": [],
+									"description": "Foto 1 do primeiro estudante"
+								},
+								{
+									"key": "data[1][attributes][name]",
+									"value": "Maria Santos",
+									"type": "text"
+								},
+								{
+									"key": "data[1][attributes][ra]",
+									"value": "789012",
+									"type": "text"
+								},
+								{
+									"key": "data[1][attributes][email]",
+									"value": "maria.santos@example.com",
+									"type": "text"
+								},
+								{
+									"key": "data[1][attributes][files][0]",
+									"type": "file",
+									"src": [],
+									"description": "Foto 1 do segundo estudante"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/admin/courses/{{course_id}}/class_rooms/{{class_room_id}}/students",
+							"host": ["{{URL}}"],
+							"path": [
+								"admin",
+								"courses",
+								"{{course_id}}",
+								"class_rooms",
+								"{{class_room_id}}",
+								"students"
+							]
+						},
+						"description": "Cria múltiplos estudantes em uma única requisição, cada um com suas respectivas fotos para embeddings."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "event_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "course_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "class_room_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "student_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+

@@ -33,11 +33,18 @@ module Admin
     def create
       students = []
       errors = []
+      embedding_errors = []
 
-      create_params.each do |student_param|
+      create_params.each_with_index do |student_param, index|
         full_params = student_param.merge(class_room_id: params[:class_room_id])
         student = StudentManagement::Create.new(full_params).call
         students << student
+
+        files = get_student_files(index)
+        if files.present?
+          embedding_result = create_embeddings_for_student(student, files)
+          embedding_errors << { student_id: student.id, error: embedding_result[:error] } unless embedding_result[:success]
+        end
       rescue ActiveRecord::RecordInvalid => e
         errors << {
           attributes: student_param,
@@ -45,16 +52,7 @@ module Admin
         }
       end
 
-      if errors.empty?
-        render jsonapi: students, include: [:class_room],
-               class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom },
-               status: :created
-      else
-        render json: {
-          created: students.map { |s| { id: s.id, type: 'student' } },
-          errors: errors
-        }, status: :multi_status
-      end
+      render_response_for_create(students, errors, embedding_errors)
     end
 
     def update
@@ -64,6 +62,15 @@ module Admin
 
       if @student.valid?
         @student.save!
+
+        files = get_student_files
+        if files.present?
+          embedding_result = create_embeddings_for_student(@student, files)
+          unless embedding_result[:success]
+            Rails.logger.warn("Erro ao criar embeddings para estudante #{@student.id}: #{embedding_result[:error]}")
+          end
+        end
+
         render jsonapi: @student, include: include_options,
                class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom }, status: :ok
       else
@@ -135,6 +142,49 @@ module Admin
 
     def update_params
       params.require(:data).require(:attributes).permit(:name, :ra)
+    end
+
+    def get_student_files(index = nil)
+      if index.present?
+        files = params.dig(:files, index) || params.dig(:data, index, :files) || params.dig(:data, index, :attributes, :files)
+      else
+        files = params[:files] || params.dig(:data, :attributes, :files)
+      end
+
+      files = Array(files) if files.present?
+      files&.reject(&:blank?)
+    end
+
+    def create_embeddings_for_student(student, files)
+      return { success: false, error: 'Arquivos não fornecidos' } unless files.present?
+
+      service = FaceAuth::CreateEmbeddings.new(student.id, files)
+      result = service.perform
+
+      if result.present?
+        { success: true, result: result }
+      else
+        { success: false, error: 'Erro ao criar embeddings. Verifique os logs para mais detalhes.' }
+      end
+    rescue StandardError => e
+      Rails.logger.error("Erro ao criar embeddings para estudante #{student.id}: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n")) if e.backtrace
+      { success: false, error: e.message }
+    end
+
+    def render_response_for_create(students, errors, embedding_errors)
+      if errors.empty? && embedding_errors.empty?
+        render jsonapi: students, include: [:class_room],
+               class: { Student: SerializableStudent, ClassRoom: SerializableClassRoom },
+               status: :created
+      else
+        response_data = {
+          created: students.map { |s| { id: s.id, type: 'student' } },
+          errors: errors,
+          embedding_errors: embedding_errors
+        }
+        render json: response_data, status: :multi_status
+      end
     end
   end
 end

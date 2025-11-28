@@ -6,8 +6,8 @@ class Event < ApplicationRecord
   has_many :participants
   belongs_to :creator, class_name: 'User'
 
-  validates :name, :description, :event_start, :event_end, :location, :latitude, :longitude, presence: true
-
+  validates :name, :event_start, :event_end, :location, :latitude, :longitude, presence: true
+  
   scope :finished, -> { where('event_end < ?', Time.current) }
   scope :upcoming, -> { where('event_start > ?', Time.current) }
   scope :in_progress, -> { where('event_start < ? AND event_end > ?', Time.current, Time.current) }

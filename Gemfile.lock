@@ -240,6 +240,7 @@ GEM
     parallel_tests (5.1.0)
       parallel
     pg (1.5.9)
+    pgvector (0.3.2)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -374,6 +375,7 @@ DEPENDENCIES
   letter_opener
   parallel_tests
   pg (~> 1.1)
+  pgvector (~> 0.3.2)
   puma (>= 5.0)
   pundit (~> 2.5)
   rack-cors
