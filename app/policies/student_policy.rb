@@ -27,6 +27,14 @@ class StudentPolicy < ApplicationPolicy
     admin?
   end
 
+  def delete_embedding?
+    admin?
+  end
+
+  def add_embedding?
+    admin?
+  end
+
   private
 
   def admin?

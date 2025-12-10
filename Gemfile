@@ -43,3 +43,6 @@ end
 gem "pundit", "~> 2.5"
 
 gem "pgvector", "~> 0.3.2"
+
+gem "faraday", "~> 2.14"
+gem "faraday-multipart", "~> 1.0"

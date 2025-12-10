@@ -2,14 +2,14 @@
 
 module Admin
   class ParticipantsController < ApplicationController
-    before_action :authenticate_user_with_jwt, only: %i[index show destroy export_participants]
+    before_action :authenticate_user_with_jwt, only: %i[index show update destroy export_participants]
 
     attr_reader :participant
 
-    before_action :set_participant, only: %i[show destroy]
+    before_action :set_participant, only: %i[show update destroy]
 
     before_action -> { authorize(Participant) }, only: %i[index export_participants]
-    before_action -> { authorize(@participant) }, only: %i[show destroy]
+    before_action -> { authorize(@participant) }, only: %i[show update destroy]
 
     def index
       participants = Participant.includes(:student).where(event_id: event_id)
@@ -30,6 +30,18 @@ module Admin
                class: { Participant: SerializableParticipant, Event: SerializableEvent, Student: SerializableStudent }, status: :ok
       else
         render json: { error: 'Participante não encontrado' }, status: :not_found
+      end
+    end
+
+    def update
+      @participant = Participant.find_by(id: find_params, event_id: event_id)
+      return render json: { error: 'Participante não encontrado' }, status: :not_found unless @participant
+
+      if @participant.update(participant_params.merge(location: "Inserido manualmente pelo administrador"))
+        render jsonapi: @participant, include: include_options,
+               class: { Participant: SerializableParticipant, Event: SerializableEvent, Student: SerializableStudent }, status: :ok
+      else
+        render json: @participant.errors, status: :unprocessable_entity
       end
     end
 

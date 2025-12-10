@@ -15,6 +15,10 @@ class ParticipantPolicy < ApplicationPolicy
     admin?
   end
 
+  def update?
+    admin?
+  end
+
   private
 
   def admin?

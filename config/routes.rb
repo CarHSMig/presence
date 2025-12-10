@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :courses
     resources :events do
-      resources :participants, only: %i[index show destroy] do
+      resources :participants, only: %i[index show update destroy] do
         collection do
           get :export_participants
         end
@@ -34,6 +34,10 @@ Rails.application.routes.draw do
           collection do
             post :import
             get :template
+          end
+          member do
+            delete :delete_embedding
+            post :add_embedding
           end
         end
       end

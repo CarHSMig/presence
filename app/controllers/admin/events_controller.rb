@@ -224,7 +224,7 @@ module Admin
 
     def generate_presence_url
       base_url = ENV['FRONTEND_URL']
-      "#{base_url}/participants/#{@event.id}"
+      "#{base_url}/participantes/#{@event.id}"
     end
   end
 end

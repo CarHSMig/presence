@@ -25,9 +25,9 @@ class ParticipantsController < ApplicationController
     end
 
     update_participant_presence(participant, validation_results)
-    participant.save
+      participant.save
 
-    render jsonapi: participant, include: include_options, class: { Participant: SerializableParticipant, Event: SerializableEvent }, status: :ok
+      render jsonapi: participant, include: include_options, class: { Participant: SerializableParticipant, Event: SerializableEvent }, status: :ok
   end
 
   def show_event
@@ -145,21 +145,21 @@ class ParticipantsController < ApplicationController
       return { success: false, error: 'Latitude e longitude são obrigatórias para validação de localização' }
     end
 
-    event_latitude = format('%.10f', event.latitude).to_f
-    event_longitude = format('%.10f', event.longitude).to_f
+      event_latitude = format('%.10f', event.latitude).to_f
+      event_longitude = format('%.10f', event.longitude).to_f
 
     location_service = Location::GetLocationParticipant.new(
       latitude.to_f,
       longitude.to_f,
-      event_latitude,
-      event_longitude
-    )
+        event_latitude,
+        event_longitude
+      )
 
     distance = location_service.distance(latitude.to_f, longitude.to_f, event.latitude, event.longitude)
-
-    if distance > Location::GetLocationParticipant::ALLOWED_RADIUS
+      
+      if distance > Location::GetLocationParticipant::ALLOWED_RADIUS
       return { success: false, error: 'Participante está fora da área do evento' }
-    end
+      end
 
     location_data = location_service.perform
     location_address = location_data&.dig("address") || location_data&.dig("display_name")
@@ -172,17 +172,21 @@ class ParticipantsController < ApplicationController
 
   def validate_face_auth(student, photo_file)
     face_auth_service = FaceAuth::ValidateFaceAuth.new(student, photo_file)
-    response = face_auth_service.perform
+    code, response = face_auth_service.perform
 
-    unless response.present? && response.is_a?(Hash)
-      return { success: false, error: 'Erro ao processar autenticação facial' }
+    if code == 400
+      return { success: false, error: 'Nenhum rosto detectado na foto' }
     end
 
+    unless code == 200 && response.present? && response.is_a?(Hash)
+      return { success: false, error: 'Erro ao processar autenticação facial' }
+    end
+    
     match_result = response["match"] || response[:match]
 
     unless match_result.is_a?(TrueClass) || match_result.is_a?(FalseClass)
       Rails.logger.error("Resposta inválida da API de face auth: #{response.inspect}")
-      return { success: false, error: 'Resposta inválida da API de autenticação facial' }
+      return { success: false, error: 'Reconhecimento facial inválido' }
     end
 
     if match_result == true

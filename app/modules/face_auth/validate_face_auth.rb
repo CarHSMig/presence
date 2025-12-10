@@ -24,12 +24,7 @@ module FaceAuth
         }
       )
 
-      unless response.success?
-        Rails.logger.error("Face auth API error: HTTP #{response.code} - #{response.body}")
-        return nil
-      end
-
-      JSON.parse(response.body)
+      [response.code, JSON.parse(response.body)]
     rescue ArgumentError => e
       Rails.logger.error("Error validating face auth: #{e.message}")
       nil

@@ -4,12 +4,12 @@ module Admin
   class StudentsController < ApplicationController
     before_action :authenticate_user_with_jwt
 
-    before_action :set_student, only: %i[show update destroy]
+    before_action :set_student, only: %i[show update destroy delete_embedding add_embedding]
 
     before_action -> { authorize(Student) }, only: %i[index create]
     before_action -> { authorize(Student, :import?) }, only: %i[import]
     before_action -> { authorize(Student, :template?) }, only: %i[template]
-    before_action -> { authorize(@student) }, only: %i[show update destroy]
+    before_action -> { authorize(@student) }, only: %i[show update destroy delete_embedding add_embedding]
 
     def index
       students = Student.all
@@ -90,6 +90,70 @@ module Admin
       end
     end
 
+    def delete_embedding
+      return render json: { error: 'Estudante não encontrado' }, status: :not_found unless @student
+
+      embedding_id = params[:embedding_id]
+      return render json: { error: 'ID do embedding é obrigatório' }, status: :bad_request unless embedding_id.present?
+
+      # Busca o facial_profile no banco local
+      facial_profile = FacialProfile.find_by(id: embedding_id, student_id: @student.id)
+      
+      unless facial_profile
+        return render json: { error: 'Embedding não encontrado para este estudante' }, status: :not_found
+      end
+
+      # Deleta na API de face auth
+      api_deleted = FaceAuth::DeleteEmbedding.new(embedding_id).perform
+
+      # Deleta do banco local
+      if facial_profile.destroy
+        render json: { 
+          message: 'Embedding deletado com sucesso',
+          api_deleted: api_deleted
+        }, status: :ok
+      else
+        render json: { 
+          error: 'Erro ao deletar embedding',
+          errors: facial_profile.errors.full_messages
+        }, status: :unprocessable_entity
+      end
+    rescue StandardError => e
+      Rails.logger.error("Erro ao deletar embedding: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n")) if e.backtrace
+      render json: { error: 'Erro ao processar exclusão do embedding' }, status: :internal_server_error
+    end
+
+    def add_embedding
+      return render json: { error: 'Estudante não encontrado' }, status: :not_found unless @student
+
+      files = get_embedding_files
+      return render json: { error: 'Arquivo de imagem é obrigatório' }, status: :bad_request unless files.present?
+
+      if files.length > FaceAuth::CreateEmbeddings::MAX_FILES
+        return render json: { 
+          error: "Máximo de #{FaceAuth::CreateEmbeddings::MAX_FILES} arquivos permitidos, recebidos #{files.length}" 
+        }, status: :bad_request
+      end
+
+      embedding_result = create_embeddings_for_student(@student, files)
+
+      if embedding_result[:success]
+        render json: { 
+          message: 'Embedding criado com sucesso',
+          result: embedding_result[:result]
+        }, status: :created
+      else
+        render json: { 
+          error: embedding_result[:error] || 'Erro ao criar embedding'
+        }, status: :unprocessable_entity
+      end
+    rescue StandardError => e
+      Rails.logger.error("Erro ao adicionar embedding: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n")) if e.backtrace
+      render json: { error: 'Erro ao processar criação do embedding' }, status: :internal_server_error
+    end
+
     def import
       render json: { error: 'Arquivo não enviado' }, status: :bad_request and return if params[:file].blank?
 
@@ -135,24 +199,116 @@ module Admin
     end
 
     def create_params
-      params.require(:data).map do |item|
+      data = params.require(:data)
+
+      data = parse_json_if_string(data)
+      
+      data = Array(data) unless data.is_a?(Array)
+      
+      data.map do |item|
+        item = parse_json_if_string(item)
+        
+        item = ActionController::Parameters.new(item) if item.is_a?(Hash)
+        
         item.require(:attributes).permit(:name, :ra, :email)
       end
     end
 
     def update_params
-      params.require(:data).require(:attributes).permit(:name, :ra)
+      data = params.require(:data)
+      
+      data = parse_json_if_string(data)
+      
+      data = ActionController::Parameters.new(data) if data.is_a?(Hash)
+      
+      data.require(:attributes).permit(:name, :ra)
+    end
+
+    def get_embedding_files
+      # Para adicionar embedding a um estudante existente
+      files = params[:file] || params[:files] || params.dig(:data, :attributes, :file) || params.dig(:data, :attributes, :files)
+
+      # Normaliza para array
+      if files.present?
+        files = Array(files) unless files.is_a?(Array)
+        files = files.select { |f| f.present? && f.is_a?(ActionDispatch::Http::UploadedFile) }
+      else
+        files = []
+      end
+
+      files.present? ? files : nil
     end
 
     def get_student_files(index = nil)
+      # Formato esperado:
+      # - data: "[{type: 'students', attributes: {...}}, ...]" (JSON string)
+      # - files: [File1, File2, File3, ..., FileN] (Array de arquivos)
+      
+      all_files = extract_all_files
+      return nil if all_files.blank?
+
       if index.present?
-        files = params.dig(:files, index) || params.dig(:data, index, :files) || params.dig(:data, index, :attributes, :files)
+        # Para múltiplos estudantes, distribui os arquivos
+        # Opção 1: Todos os arquivos para todos os estudantes
+        files = all_files
+        
+        # Opção 2: Distribuição sequencial (descomente se necessário)
+        # files_per_student = calculate_files_per_student(all_files.length, index)
+        # files = all_files[files_per_student[:start]..files_per_student[:end]]
       else
-        files = params[:files] || params.dig(:data, :attributes, :files)
+        # Para um único estudante, retorna todos os arquivos
+        files = all_files
       end
 
-      files = Array(files) if files.present?
-      files&.reject(&:blank?)
+      files.present? ? files : nil
+    end
+
+    def extract_all_files
+      files = params[:files]
+      
+      # Se files é um array de UploadedFile, retorna direto
+      if files.is_a?(Array)
+        return files.select { |f| f.present? && f.is_a?(ActionDispatch::Http::UploadedFile) }
+      end
+      
+      # Se files é um único UploadedFile, coloca em array
+      if files.is_a?(ActionDispatch::Http::UploadedFile)
+        return [files]
+      end
+      
+      # Tenta buscar arquivos com índices explícitos: files[0], files[1], etc.
+      if files.blank?
+        indexed_files = []
+        (0..4).each do |i|
+          indexed_file = params[:"files[#{i}]"]
+          break if indexed_file.blank?
+          indexed_files << indexed_file if indexed_file.is_a?(ActionDispatch::Http::UploadedFile)
+        end
+        return indexed_files if indexed_files.present?
+      end
+      
+      # Tenta buscar dentro da estrutura data
+      files ||= params.dig(:data, :attributes, :files)
+      
+      # Normaliza para array e filtra
+      if files.present?
+        files = Array(files) unless files.is_a?(Array)
+        files = files.select { |f| f.present? && f.is_a?(ActionDispatch::Http::UploadedFile) }
+      else
+        files = []
+      end
+      
+      files
+    end
+
+    def calculate_files_per_student(total_files, student_index)
+      students_count = create_params.length
+      files_per_student = (total_files.to_f / students_count).ceil
+      
+      start_index = student_index * files_per_student
+      end_index = [start_index + files_per_student - 1, total_files - 1].min
+      
+      { start: start_index, end: end_index }
     end
 
     def create_embeddings_for_student(student, files)
@@ -184,6 +340,21 @@ module Admin
           embedding_errors: embedding_errors
         }
         render json: response_data, status: :multi_status
+      end
+    end
+
+    def parse_json_if_string(value)
+      return value unless value.is_a?(String)
+      
+      begin
+        parsed = JSON.parse(value)
+        if parsed.is_a?(Array) && parsed.first.is_a?(String)
+          parsed.map { |item| parse_json_if_string(item) }
+        else
+          parsed
+        end
+      rescue JSON::ParserError
+        value
       end
     end
   end
