@@ -4,7 +4,6 @@ class CreateJoinTableEventsClassRooms < ActiveRecord::Migration[8.0]
       t.references :event, null: false, foreign_key: true, type: :uuid
       t.references :class_room, null: false, foreign_key: true, type: :uuid
 
-      # Índices para melhorar consultas
       t.index [:event_id, :class_room_id], unique: true
       t.index [:class_room_id, :event_id]
     end

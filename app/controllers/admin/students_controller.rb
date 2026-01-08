@@ -96,17 +96,14 @@ module Admin
       embedding_id = params[:embedding_id]
       return render json: { error: 'ID do embedding é obrigatório' }, status: :bad_request unless embedding_id.present?
 
-      # Busca o facial_profile no banco local
       facial_profile = FacialProfile.find_by(id: embedding_id, student_id: @student.id)
       
       unless facial_profile
         return render json: { error: 'Embedding não encontrado para este estudante' }, status: :not_found
       end
 
-      # Deleta na API de face auth
       api_deleted = FaceAuth::DeleteEmbedding.new(embedding_id).perform
 
-      # Deleta do banco local
       if facial_profile.destroy
         render json: { 
           message: 'Embedding deletado com sucesso',
@@ -225,10 +222,8 @@ module Admin
     end
 
     def get_embedding_files
-      # Para adicionar embedding a um estudante existente
       files = params[:file] || params[:files] || params.dig(:data, :attributes, :file) || params.dig(:data, :attributes, :files)
 
-      # Normaliza para array
       if files.present?
         files = Array(files) unless files.is_a?(Array)
         files = files.select { |f| f.present? && f.is_a?(ActionDispatch::Http::UploadedFile) }
@@ -240,23 +235,12 @@ module Admin
     end
 
     def get_student_files(index = nil)
-      # Formato esperado:
-      # - data: "[{type: 'students', attributes: {...}}, ...]" (JSON string)
-      # - files: [File1, File2, File3, ..., FileN] (Array de arquivos)
-      
       all_files = extract_all_files
       return nil if all_files.blank?
 
       if index.present?
-        # Para múltiplos estudantes, distribui os arquivos
-        # Opção 1: Todos os arquivos para todos os estudantes
         files = all_files
-        
-        # Opção 2: Distribuição sequencial (descomente se necessário)
-        # files_per_student = calculate_files_per_student(all_files.length, index)
-        # files = all_files[files_per_student[:start]..files_per_student[:end]]
       else
-        # Para um único estudante, retorna todos os arquivos
         files = all_files
       end
 
@@ -266,17 +250,14 @@ module Admin
     def extract_all_files
       files = params[:files]
       
-      # Se files é um array de UploadedFile, retorna direto
       if files.is_a?(Array)
         return files.select { |f| f.present? && f.is_a?(ActionDispatch::Http::UploadedFile) }
       end
       
-      # Se files é um único UploadedFile, coloca em array
       if files.is_a?(ActionDispatch::Http::UploadedFile)
         return [files]
       end
       
-      # Tenta buscar arquivos com índices explícitos: files[0], files[1], etc.
       if files.blank?
         indexed_files = []
         (0..4).each do |i|
@@ -287,10 +268,8 @@ module Admin
         return indexed_files if indexed_files.present?
       end
       
-      # Tenta buscar dentro da estrutura data
       files ||= params.dig(:data, :attributes, :files)
       
-      # Normaliza para array e filtra
       if files.present?
         files = Array(files) unless files.is_a?(Array)
         files = files.select { |f| f.present? && f.is_a?(ActionDispatch::Http::UploadedFile) }

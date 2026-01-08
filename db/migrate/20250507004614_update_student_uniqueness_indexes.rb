@@ -3,7 +3,6 @@ class UpdateStudentUniquenessIndexes < ActiveRecord::Migration[7.0]
     remove_index :students, :name if index_exists?(:students, :name)
     remove_index :students, :ra if index_exists?(:students, :ra)
 
-    # Adiciona os novos índices com escopo na turma
     add_index :students, [:name, :class_room_id], unique: true
     add_index :students, [:ra, :class_room_id], unique: true
   end
