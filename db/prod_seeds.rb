@@ -1,15 +1,20 @@
+# Senhas dos administradores vêm do ambiente; nunca as escreva neste arquivo.
+#   PRESENCE_ADMIN_PASSWORD=... PRESENCE_ALAN_PASSWORD=... bin/rails runner db/prod_seeds.rb
+admin_password = ENV.fetch("PRESENCE_ADMIN_PASSWORD")
+alan_password = ENV.fetch("PRESENCE_ALAN_PASSWORD")
+
 User.create!(
   name: "Admin",
   email: "admin@university.presence",
-  password: "troque-esta-senha",
-  password_confirmation: "troque-esta-senha",
+  password: admin_password,
+  password_confirmation: admin_password,
   admin: true
 )
 User.create!(
   name: "Alan",
   email: "alan@university.presence",
-  password: "troque-esta-senha",
-  password_confirmation: "troque-esta-senha",
+  password: alan_password,
+  password_confirmation: alan_password,
   admin: true
 )
 
